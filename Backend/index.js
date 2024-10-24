@@ -26,6 +26,10 @@ const {
 } = require("./Model/Model");
 console.log("Models loaded.");
 
+app.get('/', (req, res) => {
+  res.send('Hello World!');
+});
+
 // User Registration
 // User Registration
 app.post("/register", async (req, res) => {
