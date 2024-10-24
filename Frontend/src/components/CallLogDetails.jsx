@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { BASE_URL } from './constants'
 
 const CallLogDetails = () => {
   const { employeeId } = useParams();
@@ -15,10 +16,11 @@ const CallLogDetails = () => {
   const fetchCallLogs = async (id) => {
     try {
       const response = await axios.get(
-        `http://localhost:3005/employees/${id}/call-logs`
+        `${BASE_URL}/employees/${id}/call-logs`
       );
       setCallLogs(response.data);
       setFilteredCallLogs(response.data);
+
       setErrorMessage(""); // Clear error message if successful
     } catch (error) {
       console.error("Error fetching call logs:", error);
@@ -32,7 +34,7 @@ const CallLogDetails = () => {
     if (window.confirm("Do you really want to delete this call log?")) {
       try {
         const response = await axios.delete(
-          `http://localhost:3005/Delete-call-log/${employeeId}/${callLogId}`
+          `${BASE_URL}/Delete-call-log/${employeeId}/${callLogId}`
         );
         console.log("Delete response:", response);
         setCallLogs((prevLogs) =>
@@ -56,7 +58,7 @@ const CallLogDetails = () => {
     ) {
       try {
         await axios.delete(
-          `http://localhost:3005/Delete-all-call-logs/${employeeId}`
+          `${BASE_URL}/Delete-all-call-logs/${employeeId}`
         );
         setCallLogs([]); // Empty the call logs state
         setFilteredCallLogs([]); // Empty the filtered call logs state
@@ -231,10 +233,10 @@ const CallLogDetails = () => {
                   {(log.duration / 60).toFixed(2)} mins
                 </td>
                 <td className="border border-gray-300 px-6 py-4">
-  {new Date(log.dateTime).toLocaleString(undefined, {
-    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-  })}
-</td>
+                  {new Date(log.dateTime).toLocaleString(undefined, {
+                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+                  })}
+                </td>
 
                 <td className="border border-gray-300 px-6 py-4">
                   <button

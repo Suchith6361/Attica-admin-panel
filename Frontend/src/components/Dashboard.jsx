@@ -7,6 +7,7 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
+import { BASE_URL } from './constants'
 
 const Dashboard = () => {
   const { employeeId } = useParams(); // Get employeeId from URL
@@ -29,32 +30,32 @@ const Dashboard = () => {
     try {
       // Fetch employee data
       const employeeResponse = await axios.get(
-        `http://localhost:3005/employees/${id}`
+        `${BASE_URL}/employees/${id}`
       );
       setEmployee(employeeResponse.data);
 
       // Fetch total calls
       const callResponse = await axios.get(
-        `http://localhost:3005/employees/${id}/total-calls`
+        `${BASE_URL}/employees/${id}/total-calls`
       );
       setTotalCalls(callResponse.data.totalCalls || 0);
 
       // Fetch total messages
       const messageResponse = await axios.get(
-        `http://localhost:3005/employees/${id}/total-messages`
+        `${BASE_URL}/employees/${id}/total-messages`
       );
       setTotalMessages(messageResponse.data.totalMessages || 0);
 
       // Fetch attendance data
       const attendanceResponse = await axios.get(
-        `http://localhost:3005/employees/${id}/attendance-list`
+        `${BASE_URL}/employees/${id}/attendance-list`
       );
       setAttendanceStatus(attendanceResponse.data.status || "N/A");
 
       // Fetch salary details
      // Fetch salary details
 const salaryResponse = await axios.get(
-  `http://localhost:3005/employees/${id}/salaries`
+  `${BASE_URL}/employees/${id}/salaries`
 );
 setBasicSalary(salaryResponse.data.basicSalary || "N/A");
 setNumberOfLeaves(salaryResponse.data.noOfLeaves || "N/A"); // Updated to match the MongoDB field

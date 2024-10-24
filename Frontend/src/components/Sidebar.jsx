@@ -7,6 +7,7 @@ import {
   FaClipboardList, // Import icon for Attendance
   FaMapMarkerAlt, // Import icon for Location
 } from "react-icons/fa";
+import { BASE_URL } from './constants'
 
 const Sidebar = () => {
   return (

@@ -3,6 +3,7 @@ import axios from "axios";
 import { useParams, Link } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { BASE_URL } from './constants'
 
 const AttendanceTable = () => {
   const [attendance, setAttendance] = useState([]);
@@ -17,7 +18,7 @@ const AttendanceTable = () => {
       setLoading(true);
       try {
         const response = await axios.get(
-          `http://localhost:3005/employees/${employeeId}/attendance-list`
+          `${BASE_URL}/employees/${employeeId}/attendance-list`
         );
         const data = Array.isArray(response.data) ? response.data : [];
         console.log(data); // Inspect the data structure
@@ -33,7 +34,7 @@ const AttendanceTable = () => {
     const fetchEmployeeDetails = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3005/employees/${employeeId}`
+          `${BASE_URL}/employees/${employeeId}`
         );
         setEmployee(response.data);
       } catch (err) {

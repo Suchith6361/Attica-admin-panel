@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { BASE_URL } from './constants'
 
 const Complaints = () => {
   const { employeeId, name, mobileNumber } = useParams();
@@ -14,12 +15,12 @@ const Complaints = () => {
       setLoading(true);
       try {
         const employeeResponse = await axios.get(
-          `http://localhost:3005/employees/${employeeId}/attendance-list`
+          `${BASE_URL}/employees/${employeeId}/attendance-list`
         );
         setEmployee(employeeResponse.data);
 
         const complaintsResponse = await axios.get(
-          `http://localhost:3005/employees/${employeeId}/attendance-list/complaints`
+          `${BASE_URL}/employees/${employeeId}/attendance-list/complaints`
         );
         setComplaints(complaintsResponse.data);
       } catch (err) {

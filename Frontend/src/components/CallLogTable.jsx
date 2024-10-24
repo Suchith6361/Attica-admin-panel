@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { BASE_URL } from './constants'
 
 const CallLogTable = () => {
   const { employeeId } = useParams(); // Get employeeId from URL parameters
@@ -16,7 +17,7 @@ const CallLogTable = () => {
       const fetchCallLogs = async () => {
         try {
           const response = await axios.get(
-            `http://localhost:3005/employees/${employeeId}/call-logs`
+            `${BASE_URL}/employees/${employeeId}/call-logs`
           );
           setCallLogs(response.data); // Set call logs in the state
           setFilteredCallLogs(response.data); // Set filtered logs initially
@@ -53,7 +54,7 @@ const CallLogTable = () => {
     if (window.confirm("Do you really want to delete this call log?")) {
       try {
         await axios.delete(
-          `http://localhost:3005/Delete-call-log/${employeeId}/${callLogId}`
+          `${BASE_URL}/Delete-call-log/${employeeId}/${callLogId}`
         );
         setCallLogs((prevLogs) =>
           prevLogs.filter((log) => log._id !== callLogId)
@@ -76,7 +77,7 @@ const CallLogTable = () => {
     ) {
       try {
         await axios.delete(
-          `http://localhost:3005/Delete-all-call-logs/${employeeId}`
+          `${BASE_URL}/Delete-all-call-logs/${employeeId}`
         );
         setCallLogs([]); // Clear call logs state
         setFilteredCallLogs([]); // Clear filtered logs

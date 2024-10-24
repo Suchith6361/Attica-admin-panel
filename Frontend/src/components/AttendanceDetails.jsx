@@ -3,6 +3,7 @@ import axios from "axios";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import { BASE_URL } from './constants'
 
 const AttendanceDetails = () => {
   const [employee, setEmployee] = useState(null);
@@ -19,7 +20,7 @@ const AttendanceDetails = () => {
     setError(null); // Reset the error
     try {
       const response = await axios.get(
-        `http://localhost:3005/employees/${id}/attendance-list`
+        `${BASE_URL}/employees/${id}/attendance-list`
       );
       setEmployee(response.data);
       setAttendance(response.data.attendanceRecords || []);

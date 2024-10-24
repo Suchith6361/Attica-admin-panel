@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Navigate, useNavigate } from "react-router-dom";
+import { BASE_URL } from './constants'
 
 const AuthPage = () => {
   const [isLogin, setIsLogin] = useState(true); // Toggle between login and register
@@ -19,7 +20,7 @@ const AuthPage = () => {
   const handleLogin = async () => {
     console.log(username, password);
     try {
-      let result = await fetch("http://localhost:3005/login", {
+      let result = await fetch(`${BASE_URL}/login`, {
         method: "post",
         body: JSON.stringify({ username, password }),
         headers: {
@@ -44,7 +45,7 @@ const AuthPage = () => {
   const handleRegister = async () => {
     console.log(username, password);
     try {
-      let result = await fetch("http://localhost:3005/register", {
+      let result = await fetch(`${BASE_URL}/register`, {
         method: "post",
         body: JSON.stringify({ username, password }),
         headers: {

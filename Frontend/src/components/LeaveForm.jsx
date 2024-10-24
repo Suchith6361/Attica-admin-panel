@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import { BASE_URL } from './constants'
 
 const LeaveForm = () => {
   const { employeeId, name, mobileNumber } = useParams();
@@ -14,12 +15,12 @@ const LeaveForm = () => {
       setLoading(true);
       try {
         const employeeResponse = await axios.get(
-          `http://localhost:3005/employees/${employeeId}/attendance-list`
+          `${BASE_URL}/employees/${employeeId}/attendance-list`
         );
         setEmployee(employeeResponse.data);
 
         const leaveRequestsResponse = await axios.get(
-          `http://localhost:3005/employees/${employeeId}/attendance-list/leaves`
+          `${BASE_URL}/employees/${employeeId}/attendance-list/leaves`
         );
         setLeaveRequests(leaveRequestsResponse.data);
       } catch (err) {

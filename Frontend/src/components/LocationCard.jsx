@@ -1,6 +1,7 @@
 // LocationCard.js
 import React, { useState } from "react";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { BASE_URL } from './constants'
 
 const LocationCard = () => {
   const [phoneNumber, setPhoneNumber] = useState("");

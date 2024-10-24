@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { FaCircle } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { BASE_URL } from './constants'
 
 const Employee = () => {
   const [employees, setEmployees] = useState([]);
@@ -13,7 +14,7 @@ const Employee = () => {
     setLoading(true);
     setError(null); // Reset error before fetching
     try {
-      const response = await axios.get("http://localhost:3005/employees");
+      const response = await axios.get(`${BASE_URL}/employees`);
       setEmployees(response.data);
     } catch (err) {
       setError("Error fetching employees. Please try again later.");

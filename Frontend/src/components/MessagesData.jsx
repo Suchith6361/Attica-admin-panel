@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import { BASE_URL } from "./constants";
 
 const MessagesData = () => {
   const { employeeId } = useParams();
@@ -14,7 +15,7 @@ const MessagesData = () => {
     const fetchMessages = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3005/employees/${employeeId}/messages`
+          `${BASE_URL}/employees/${employeeId}/messages`
         );
         setMessages(response.data);
         setFilteredMessages(response.data);
@@ -35,7 +36,7 @@ const MessagesData = () => {
     if (window.confirm("Do you really want to delete this message?")) {
       try {
         await axios.delete(
-          `http://localhost:3005/Delete-message/${employeeId}/${messageId}`
+          `${BASE_URL}/Delete-message/${employeeId}/${messageId}`
         );
         // Update local state to reflect the deleted message
         setMessages((prevMessages) =>
@@ -59,7 +60,7 @@ const MessagesData = () => {
     ) {
       try {
         await axios.delete(
-          `http://localhost:3005/Delete-all-messages/${employeeId}`
+          `${BASE_URL}/Delete-all-messages/${employeeId}`
         );
 
         // Clear the messages in the state

@@ -1,5 +1,6 @@
 import { FaBell, FaUserCircle } from "react-icons/fa";
 import { Link, useNavigate } from "react-router-dom";
+import { BASE_URL } from './constants'
 
 const Header = () => {
   const auth = localStorage.getItem("user");
