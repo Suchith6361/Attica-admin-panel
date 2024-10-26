@@ -7,7 +7,7 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
-import { BASE_URL } from './constants'
+import { BASE_URL } from './constants';
 
 const Dashboard = () => {
   const { employeeId } = useParams(); // Get employeeId from URL
@@ -26,6 +26,15 @@ const Dashboard = () => {
   const fetchEmployeeData = async (id) => {
     setLoading(true);
     setError(null);
+
+    // Reset states to avoid showing old data
+    setEmployee({});
+    setTotalCalls(0);
+    setTotalMessages(0);
+    setAttendanceStatus("N/A");
+    setBasicSalary("N/A");
+    setNumberOfLeaves("N/A");
+    setActualSalary("N/A");
 
     try {
       // Fetch employee data
@@ -53,14 +62,12 @@ const Dashboard = () => {
       setAttendanceStatus(attendanceResponse.data.status || "N/A");
 
       // Fetch salary details
-     // Fetch salary details
-const salaryResponse = await axios.get(
-  `${BASE_URL}/employees/${id}/salaries`
-);
-setBasicSalary(salaryResponse.data.basicSalary || "N/A");
-setNumberOfLeaves(salaryResponse.data.noOfLeaves || "N/A"); // Updated to match the MongoDB field
-setActualSalary(salaryResponse.data.actualSalary || "N/A");
-
+      const salaryResponse = await axios.get(
+        `${BASE_URL}/employees/${id}/salaries`
+      );
+      setBasicSalary(salaryResponse.data.basicSalary || "N/A");
+      setNumberOfLeaves(salaryResponse.data.noOfLeaves || "N/A");
+      setActualSalary(salaryResponse.data.actualSalary || "N/A");
 
     } catch (err) {
       setError("Error fetching employee data. Please check the Employee ID.");
@@ -124,7 +131,7 @@ setActualSalary(salaryResponse.data.actualSalary || "N/A");
           Phone Number: {employee.mobileNumber || "N/A"}
         </p>
         <p className="text-gray-700 text-xl">
-          Basic Salary: {basicSalary} {/* Displaying basic salary */}
+          Basic Salary: {basicSalary || "N/A"}
         </p>
       </div>
 

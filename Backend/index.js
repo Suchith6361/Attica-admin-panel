@@ -19,10 +19,10 @@ const {
   Location,
   Employee,
   User,
-  Attendance,
   Complaint,
   Leaves,
   Salary,
+  AttendanceList,
 } = require("./Model/Model");
 console.log("Models loaded.");
 
@@ -76,16 +76,6 @@ app.get("/employees", async (req, res) => {
   }
 });
 
-// app.get("/employees/:employeeId", async (req, res) => {
-//   try {
-//     const employees = await Employee.find();
-//     console.log(employees); // Log the employees fetched
-//     res.status(200).json(employees);
-//   } catch (error) {
-//     console.error("Error fetching employees:", error);
-//     res.status(500).json({ error: "Error fetching employees" });
-//   }
-// });
 
 // Backend route to fetch employee details
 app.get("/employees/:employeeId", async (req, res) => {
@@ -163,6 +153,7 @@ app.get("/employees/:employeeId/total-messages", async (req, res) => {
     console.error("Error fetching total call logs:", error);
     res.status(500).json({ error: "Error fetching total call logs" });
   }
+
 });
 
 
@@ -177,22 +168,31 @@ app.get("/employees/:employeeId/attendance-list", async (req, res) => {
       return res.status(404).json({ error: "Employee not found" });
     }
 
-    // Assuming `attendance` is a separate collection linked to the employeeId
-    const attendance = await Attendance.find({
+    // Fetch attendance records linked to the employeeId
+    const attendance = await AttendanceList.find({
       employeeId: req.params.employeeId,
     });
+
+    // Log both employee and attendance data
+    console.log("Employee Data: ", employee);
+    console.log("Attendance Records: ", attendance); // Debugging line
 
     res.status(200).json({
       employeeId: employee.employeeId,
       name: employee.name,
       mobileNumber: employee.mobileNumber,
-      attendance: attendance, // Include attendance records
+      attendance: attendance,
     });
   } catch (error) {
     console.error("Error fetching employee data:", error);
     res.status(500).json({ error: "Error fetching employee data" });
   }
 });
+
+
+
+
+
 
 app.get("/employees/:employeeId/call-logs", async (req, res) => {
   const { employeeId } = req.params;
@@ -297,28 +297,6 @@ app.get("/employees/:employeeId/attendance-list/leaves", async (req, res) => {
   } catch (error) {
     console.error("Error fetching complaints:", error);
     res.status(500).json({ error: "Error fetching complaints" });
-  }
-});
-// app.get("/complaints", async (req, res) => {
-//   try {
-//     const { employeeId } = req.params;
-//     const complaints = await Complaint.find({ employeeId });
-//     res.status(200).json(complaints);
-//   } catch (error) {
-//     console.error("Error fetching complaints:", error);
-//     res.status(500).json({ error: "Error fetching complaints" });
-//   }
-// });
-
-// Assuming you have a model for Attendance
-app.get("/employees/:employeeId/attendance-list", async (req, res) => {
-  try {
-    const { employeeId } = req.params;
-    const attendanceRecords = await Attendance.find({ employeeId });
-    res.status(200).json(attendanceRecords);
-  } catch (error) {
-    console.error("Error fetching attendance:", error);
-    res.status(500).json({ error: "Error fetching attendance" });
   }
 });
 

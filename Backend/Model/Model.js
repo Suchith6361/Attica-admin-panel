@@ -25,24 +25,22 @@ const messageSchema = new mongoose.Schema({
   },
 });
 
-const attendanceSchema = new mongoose.Schema({
+
+const attendanceSchema= new mongoose.Schema({
   employeeId: {
     type: String,
     required: true,
   },
   AttendanceStatus: {
-    isPresent: {
-      // Change to Boolean
+    isPresent: { // Change to Boolean
       type: Boolean,
       required: true,
     },
-    isLeave: {
-      // Change to Boolean
+    isLeave: { // Change to Boolean
       type: Boolean,
       required: true,
     },
-    isHalfDay: {
-      // Change to Boolean
+    isHalfDay: { // Change to Boolean
       type: Boolean,
       required: true,
     },
@@ -66,7 +64,7 @@ const attendanceSchema = new mongoose.Schema({
     default: Date.now,
     required: true,
   },
-});
+},);
 
 const complaintSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -126,14 +124,10 @@ const employeeSchema = new mongoose.Schema({
 const Location = mongoose.model("Location", locationSchema, "locations");
 const User = mongoose.model("adminuser", userSchema, "adminuser");
 const Employee = mongoose.model("employees", employeeSchema, "employees");
-const Attendance = mongoose.model(
-  "attendanceList",
-  attendanceSchema,
-  "attendanceList"
-);
 const Complaint = mongoose.model("complaints", complaintSchema, "complaints");
 const Leaves = mongoose.model("leaves", leaveSchema, "leaves");
 const Salary = mongoose.model("salaries", salarySchema, "salaries");
+const AttendanceList=mongoose.model("attendances",attendanceSchema);
 
 // Export all models
 module.exports = {
@@ -142,8 +136,8 @@ module.exports = {
   Location,
   User,
   Employee,
-  Attendance,
   Complaint,
   Leaves,
   Salary,
+  AttendanceList,
 };
