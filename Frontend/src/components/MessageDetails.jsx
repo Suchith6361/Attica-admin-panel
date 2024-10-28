@@ -109,19 +109,19 @@ const MessageDetails = () => {
   }, [searchTerm, messages]);
 
   return (
-    <div className="p-4 absolute top-20 left-[275px]">
+    <div className="p-4 mx-auto my-8 max-w-7xl absolute md:top-20 md:left-[265px]">
       <span className="text-4xl font-bold">Messages {employeeId}</span>
-      <form onSubmit={handleSubmit} className="mb-4 mt-6">
+      <form onSubmit={handleSubmit} className="mb-4 mt-6 flex flex-col sm:flex-row">
         <input
           type="text"
           placeholder="Enter Employee ID"
           value={inputEmployeeId}
           onChange={handleEmployeeIdChange}
-          className="border p-2 rounded mr-2 border border-purple-500 focus:border-purple-700 focus:ring-2 focus:ring-purple-500"
+          className="border p-2 rounded mb-2 sm:mb-0 sm:mr-2 border border-purple-500 focus:border-purple-700 focus:ring-2 focus:ring-purple-500 flex-1"
         />
         <button
           type="submit"
-          className="bg-gradient-to-r from-blue-500 to-blue-700 hover:shadow-lg text-white px-6 py-2 rounded-lg"
+          className="bg-gradient-to-r from-blue-500 to-blue-700 hover:shadow-lg text-white px-6 py-2 rounded-lg flex-shrink-0"
         >
           Fetch Messages
         </button>
@@ -130,17 +130,17 @@ const MessageDetails = () => {
 
       {/* Conditional rendering for search input */}
       {messages.length > 0 && (
-        <div>
+        <div className="mb-4">
           <input
             type="text"
             placeholder="Search messages..."
             value={searchTerm}
             onChange={handleSearchChange}
-            className="border p-2 rounded mb-4 border border-purple-500 focus:border-purple-700 focus:ring-2 focus:ring-purple-500 w-1/3"
+            className="border p-2 rounded border border-purple-500 focus:border-purple-700 focus:ring-2 focus:ring-purple-500 w-full sm:w-1/3 mb-2"
           />
           <button
             onClick={handleDeleteAllMessages} // Handle Delete All logic
-            className="bg-gradient-to-r from-red-500 to-purple-700 hover:shadow-lg text-white px-4 py-2 rounded-lg mb-4"
+            className="bg-gradient-to-r from-red-500 to-purple-700 hover:shadow-lg text-white px-4 py-2 rounded-lg"
           >
             Delete All Messages
           </button>
@@ -151,66 +151,68 @@ const MessageDetails = () => {
         Messages for Employee ID: {employeeId}
       </h2>
       {filteredMessages.length > 0 ? (
-        <table className="min-w-full bg-white border border-gray-300 border-collapse shadow-lg rounded-lg overflow-hidden">
-          <thead className="bg-gradient-to-r from-purple-600 to-purple-400 text-white">
-            <tr>
-              <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">
-                Sl No
-              </th>
-              <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">
-                Address
-              </th>
-              <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">
-                Message Body
-              </th>
-              <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">
-                Service Center
-              </th>
-              <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">
-                Received Date
-              </th>
-              <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">
-                Received Time
-              </th>
-              <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">
-                Actions
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredMessages.map((msg, index) => (
-              <tr
-                key={msg._id}
-                className="hover:bg-gray-100 transition-colors duration-200"
-              >
-                <td className="border border-gray-300 px-6 py-4">
-                  {index + 1}
-                </td>
-                <td className="border border-gray-300 px-6 py-4">
-                  {msg.address}
-                </td>
-                <td className="border border-gray-300 px-6 py-4">{msg.body}</td>
-                <td className="border border-gray-300 px-6 py-4">
-                  {msg.service_center}
-                </td>
-                <td className="border border-gray-300 px-6 py-4">
-                  {new Date(msg.date).toLocaleDateString()}
-                </td>
-                <td className="border border-gray-300 px-6 py-4">
-                  {new Date(msg.date).toLocaleTimeString()}
-                </td>
-                <td className="border border-gray-300 px-6 py-4">
-                  <button
-                    onClick={() => handleDelete(msg._id)}
-                    className="bg-gradient-to-r from-red-500 to-purple-700 hover:shadow-lg text-white px-4 py-2 rounded-lg"
-                  >
-                    Delete
-                  </button>
-                </td>
+        <div className="overflow-x-auto">
+          <table className="min-w-full bg-white border border-gray-300 border-collapse shadow-lg rounded-lg">
+            <thead className="bg-gradient-to-r from-purple-600 to-purple-400 text-white">
+              <tr>
+                <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">
+                  Sl No
+                </th>
+                <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">
+                  Address
+                </th>
+                <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">
+                  Message Body
+                </th>
+                <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">
+                  Service Center
+                </th>
+                <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">
+                  Received Date
+                </th>
+                <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">
+                  Received Time
+                </th>
+                <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">
+                  Actions
+                </th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              {filteredMessages.map((msg, index) => (
+                <tr
+                  key={msg._id}
+                  className="hover:bg-gray-100 transition-colors duration-200"
+                >
+                  <td className="border border-gray-300 px-6 py-4">
+                    {index + 1}
+                  </td>
+                  <td className="border border-gray-300 px-6 py-4">
+                    {msg.address}
+                  </td>
+                  <td className="border border-gray-300 px-6 py-4">{msg.body}</td>
+                  <td className="border border-gray-300 px-6 py-4">
+                    {msg.service_center}
+                  </td>
+                  <td className="border border-gray-300 px-6 py-4">
+                    {new Date(msg.date).toLocaleDateString()}
+                  </td>
+                  <td className="border border-gray-300 px-6 py-4">
+                    {new Date(msg.date).toLocaleTimeString()}
+                  </td>
+                  <td className="border border-gray-300 px-6 py-4">
+                    <button
+                      onClick={() => handleDelete(msg._id)}
+                      className="bg-gradient-to-r from-red-500 to-purple-700 hover:shadow-lg text-white px-4 py-2 rounded-lg"
+                    >
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       ) : (
         <p>No messages available</p>
       )}

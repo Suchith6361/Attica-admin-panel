@@ -24,7 +24,7 @@ const Dashboard = ({ employeeId }) => {
   }, []);
 
   return (
-    <div className="absolute top-16 left-[270px] right-0">
+    <div className="absolute top-16 md:left-[270px] xs:left-0 xs:right-0 right-0">
       {/* Pass the data to the components */}
       <MessagesCard messages={messagesData} />
     </div>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { BASE_URL } from './constants'
+import { BASE_URL } from './constants';
 
 const Complaints = () => {
   const { employeeId, name, mobileNumber } = useParams();
@@ -38,17 +38,17 @@ const Complaints = () => {
   const sortedComplaints = complaints.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
   return (
-    <div className="p-6 bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen absolute top-20 right-0 left-[275px]">
+    <div className="p-4 sm:p-6 bg-gradient-to-b from-gray-50 to-gray-100 min-h-screen absolute top-20 md:left-[275px] right-0 left-0 ">
       {/* Employee Information */}
       <div className="bg-gradient-to-r from-green-500 to-blue-500 p-4 rounded-lg shadow-lg mb-6">
-        <h2 className="text-2xl font-bold text-white">Employee Information</h2>
+        <h2 className="text-xl sm:text-2xl font-bold text-white">Employee Information</h2>
         <p className="text-lg text-white">ID: {employee.employeeId || employeeId}</p>
         <p className="text-lg text-white">Name: {employee.name || name}</p>
         <p className="text-lg text-white">Number: {employee.mobileNumber || mobileNumber}</p>
       </div>
 
       {/* Complaints List */}
-      <h2 className="text-3xl font-bold mb-4 text-black text-center">Complaints Inbox</h2>
+      <h2 className="text-2xl sm:text-3xl font-bold mb-4 text-black text-center">Complaints Inbox</h2>
       <div className="space-y-4">
         {loading ? (
           <p className="text-center text-gray-500">Loading complaints...</p>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { BASE_URL } from './constants'
+import { BASE_URL } from './constants';
 
 const CallLogTable = () => {
   const { employeeId } = useParams(); // Get employeeId from URL parameters
@@ -10,22 +10,28 @@ const CallLogTable = () => {
   const [searchTerm, setSearchTerm] = useState(""); // State for search term
   const [sortOrder, setSortOrder] = useState(""); // State for sorting order
   const [filterType, setFilterType] = useState("All"); // State for filtering by type
+  const [loading, setLoading] = useState(true); // State for loading
+  const [error, setError] = useState(null); // State for error
 
   // Fetch call logs when the component is mounted or employeeId changes
   useEffect(() => {
-    if (employeeId) {
-      const fetchCallLogs = async () => {
-        try {
-          const response = await axios.get(
-            `${BASE_URL}/employees/${employeeId}/call-logs`
-          );
-          setCallLogs(response.data); // Set call logs in the state
-          setFilteredCallLogs(response.data); // Set filtered logs initially
-        } catch (error) {
-          console.error("Error fetching call logs:", error);
-        }
-      };
+    const fetchCallLogs = async () => {
+      setLoading(true);
+      try {
+        const response = await axios.get(
+          `${BASE_URL}/employees/${employeeId}/call-logs`
+        );
+        setCallLogs(response.data); // Set call logs in the state
+        setFilteredCallLogs(response.data); // Set filtered logs initially
+      } catch (error) {
+        setError("Error fetching call logs. Please try again.");
+        console.error("Error fetching call logs:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
+    if (employeeId) {
       fetchCallLogs();
     }
   }, [employeeId]);
@@ -111,7 +117,7 @@ const CallLogTable = () => {
   }, [searchTerm, callLogs, filterType]);
 
   return (
-    <div className="p-6 absolute top-20 right-10 left-[270px]">
+    <div className="p-6 absolute top-20 right-10 xs:right-0 md:left-[270px] xs:left-0">
       <h2 className="text-3xl font-extrabold mb-6 text-gray-800">
         Call Logs for Employee ID: {employeeId}
       </h2>
@@ -141,7 +147,11 @@ const CallLogTable = () => {
         </button>
       </div>
 
-      {filteredCallLogs.length > 0 ? (
+      {loading ? (
+        <p className="text-center text-lg text-gray-600">Loading...</p>
+      ) : error ? (
+        <p className="text-center text-lg text-red-600">{error}</p>
+      ) : filteredCallLogs.length > 0 ? (
         <div className="overflow-x-auto">
           <table className="table-auto w-full text-left border-collapse shadow-lg rounded-lg overflow-hidden">
             <thead>

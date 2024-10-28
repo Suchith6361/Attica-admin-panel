@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { BASE_URL } from './constants'
+import { BASE_URL } from './constants';
 
 const CallLogDetails = () => {
   const { employeeId } = useParams();
@@ -15,12 +15,9 @@ const CallLogDetails = () => {
   // Fetch call logs from backend API
   const fetchCallLogs = async (id) => {
     try {
-      const response = await axios.get(
-        `${BASE_URL}/employees/${id}/call-logs`
-      );
+      const response = await axios.get(`${BASE_URL}/employees/${id}/call-logs`);
       setCallLogs(response.data);
       setFilteredCallLogs(response.data);
-
       setErrorMessage(""); // Clear error message if successful
     } catch (error) {
       console.error("Error fetching call logs:", error);
@@ -30,19 +27,11 @@ const CallLogDetails = () => {
 
   // Handle delete a single call log with confirmation
   const handleDelete = async (callLogId) => {
-    console.log("Attempting to delete call log with ID:", callLogId);
     if (window.confirm("Do you really want to delete this call log?")) {
       try {
-        const response = await axios.delete(
-          `${BASE_URL}/Delete-call-log/${employeeId}/${callLogId}`
-        );
-        console.log("Delete response:", response);
-        setCallLogs((prevLogs) =>
-          prevLogs.filter((log) => log._id !== callLogId)
-        );
-        setFilteredCallLogs((prevFiltered) =>
-          prevFiltered.filter((log) => log._id !== callLogId)
-        );
+        await axios.delete(`${BASE_URL}/Delete-call-log/${employeeId}/${callLogId}`);
+        setCallLogs((prevLogs) => prevLogs.filter((log) => log._id !== callLogId));
+        setFilteredCallLogs((prevFiltered) => prevFiltered.filter((log) => log._id !== callLogId));
       } catch (error) {
         console.error("Error deleting call log:", error);
       }
@@ -51,15 +40,9 @@ const CallLogDetails = () => {
 
   // Handle delete all call logs with confirmation
   const handleDeleteAllCallLogs = async () => {
-    if (
-      window.confirm(
-        "Do you really want to delete all call logs? This action cannot be undone."
-      )
-    ) {
+    if (window.confirm("Do you really want to delete all call logs? This action cannot be undone.")) {
       try {
-        await axios.delete(
-          `${BASE_URL}/Delete-all-call-logs/${employeeId}`
-        );
+        await axios.delete(`${BASE_URL}/Delete-all-call-logs/${employeeId}`);
         setCallLogs([]); // Empty the call logs state
         setFilteredCallLogs([]); // Empty the filtered call logs state
         alert("All call logs deleted successfully.");
@@ -133,9 +116,9 @@ const CallLogDetails = () => {
   }, [searchTerm, callLogs]);
 
   return (
-    <div className="p-4 absolute top-20 right-0 left-[275px]">
-      <span className="text-4xl font-bold">Call Logs {employeeId}</span>
-      <form onSubmit={handleSubmit} className="mb-4 mt-6">
+    <div className="p-4 absolute top-20 right-0 md:left-[275px] xs:left-0">
+      <h1 className="text-4xl font-bold mb-6">Call Logs for Employee ID: {employeeId}</h1>
+      <form onSubmit={handleSubmit} className="mb-4">
         <input
           type="text"
           placeholder="Enter Employee ID"
@@ -159,7 +142,7 @@ const CallLogDetails = () => {
             placeholder="Search call logs..."
             value={searchTerm}
             onChange={handleSearchChange}
-            className="border p-2 rounded mb-4 border border-purple-500 focus:border-purple-700 focus:ring-2 focus:ring-purple-500 w-1/3"
+            className="border p-2 rounded mb-4 border border-purple-500 focus:border-purple-700 focus:ring-2 focus:ring-purple-500 w-full md:w-1/3"
           />
           <button
             onClick={handleDeleteAllCallLogs}
@@ -170,78 +153,57 @@ const CallLogDetails = () => {
         </div>
       )}
 
-      <h2 className="text-xl font-bold mb-4">
-        Call Logs for Employee ID: {employeeId}
-      </h2>
       {filteredCallLogs.length > 0 ? (
-        <table className="min-w-full bg-white border border-gray-300 border-collapse shadow-lg rounded-lg overflow-hidden">
+        <table className="min-w-full bg-white border border-gray-300 border-collapse shadow-lg rounded-lg">
           <thead className="bg-gradient-to-r from-purple-600 to-purple-400 text-white">
             <tr>
-              <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">
-                Sl. No
-              </th>
+              <th className="border border-gray-300 px-4 py-3 text-left font-medium text-white">Sl. No</th>
               <th
-                className="border border-gray-300 px-6 py-3 text-left font-medium text-white cursor-pointer"
+                className="border border-gray-300 px-4 py-3 text-left font-medium text-white cursor-pointer"
                 onClick={() => sortCallLogs("name")}
               >
                 Name
               </th>
               <th
-                className="border border-gray-300 px-6 py-3 text-left font-medium text-white cursor-pointer"
+                className="border border-gray-300 px-4 py-3 text-left font-medium text-white cursor-pointer"
                 onClick={() => sortCallLogs("phoneNumber")}
               >
                 Phone Number
               </th>
               <th
-                className="border border-gray-300 px-6 py-3 text-left font-medium text-white cursor-pointer"
+                className="border border-gray-300 px-4 py-3 text-left font-medium text-white cursor-pointer"
                 onClick={() => sortCallLogs("type")}
               >
                 Type
               </th>
               <th
-                className="border border-gray-300 px-6 py-3 text-left font-medium text-white cursor-pointer"
+                className="border border-gray-300 px-4 py-3 text-left font-medium text-white cursor-pointer"
                 onClick={() => sortCallLogs("duration")}
               >
                 Duration (minutes)
               </th>
               <th
-                className="border border-gray-300 px-6 py-3 text-left font-medium text-white cursor-pointer"
+                className="border border-gray-300 px-4 py-3 text-left font-medium text-white cursor-pointer"
                 onClick={() => sortCallLogs("dateTime")}
               >
                 Date
               </th>
-              <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">
-                Actions
-              </th>
+              <th className="border border-gray-300 px-4 py-3 text-left font-medium text-white">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredCallLogs.map((log, index) => (
-              <tr
-                key={log._id}
-                className="hover:bg-gray-100 transition-colors duration-200"
-              >
-                <td className="border border-gray-300 px-6 py-4">
-                  {index + 1}
-                </td>
-                <td className="border border-gray-300 px-6 py-4">{log.name}</td>
-                <td className="border border-gray-300 px-6 py-4">
-                  {log.phoneNumber}
-                </td>
-                <td className="border border-gray-300 px-6 py-4">{log.type}</td>
-                <td className="border border-gray-300 px-6 py-4">
-                  {(log.duration / 60).toFixed(2)} mins
-                </td>
-                <td className="border border-gray-300 px-6 py-4">
-                  {new Date(log.dateTime).toLocaleString(undefined, {
-                    timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-                  })}
-                </td>
-
-                <td className="border border-gray-300 px-6 py-4">
+              <tr key={log._id} className="hover:bg-gray-100 transition-colors duration-200">
+                <td className="border border-gray-300 px-4 py-4">{index + 1}</td>
+                <td className="border border-gray-300 px-4 py-4">{log.name}</td>
+                <td className="border border-gray-300 px-4 py-4">{log.phoneNumber}</td>
+                <td className="border border-gray-300 px-4 py-4">{log.type}</td>
+                <td className="border border-gray-300 px-4 py-4">{log.duration}</td>
+                <td className="border border-gray-300 px-4 py-4">{new Date(log.dateTime).toLocaleDateString()}</td>
+                <td className="border border-gray-300 px-4 py-4">
                   <button
                     onClick={() => handleDelete(log._id)}
-                    className="bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-3 rounded"
+                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
                   >
                     Delete
                   </button>
@@ -251,7 +213,7 @@ const CallLogDetails = () => {
           </tbody>
         </table>
       ) : (
-        <p>No call logs available.</p>
+        <p>No call logs found.</p>
       )}
     </div>
   );

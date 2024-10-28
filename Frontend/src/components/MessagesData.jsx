@@ -8,6 +8,7 @@ const MessagesData = () => {
   const [messages, setMessages] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredMessages, setFilteredMessages] = useState([]);
+  const [errorMessage, setErrorMessage] = useState("");
   const navigate = useNavigate();
 
   // Fetch messages from backend API
@@ -20,6 +21,7 @@ const MessagesData = () => {
         setMessages(response.data);
         setFilteredMessages(response.data);
       } catch (error) {
+        setErrorMessage("Error fetching messages. Please try again later.");
         console.error("Error fetching messages:", error);
       }
     };
@@ -38,7 +40,6 @@ const MessagesData = () => {
         await axios.delete(
           `${BASE_URL}/Delete-message/${employeeId}/${messageId}`
         );
-        // Update local state to reflect the deleted message
         setMessages((prevMessages) =>
           prevMessages.filter((msg) => msg._id !== messageId)
         );
@@ -46,6 +47,7 @@ const MessagesData = () => {
           prevFiltered.filter((msg) => msg._id !== messageId)
         );
       } catch (error) {
+        setErrorMessage("Error deleting message. Please try again.");
         console.error("Error deleting message:", error);
       }
     }
@@ -62,13 +64,12 @@ const MessagesData = () => {
         await axios.delete(
           `${BASE_URL}/Delete-all-messages/${employeeId}`
         );
-
-        // Clear the messages in the state
-        setMessages([]); // Empty the messages state
+        setMessages([]);
+        setFilteredMessages([]);
         alert("All messages deleted successfully.");
       } catch (error) {
+        setErrorMessage("Error deleting all messages. Please try again.");
         console.error("Error deleting all messages:", error);
-        alert("Error deleting all messages. Please try again.");
       }
     }
   };
@@ -93,6 +94,7 @@ const MessagesData = () => {
 
   return (
     <div className="p-4 ">
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
       <input
         type="text"
         placeholder="Search messages..."
@@ -110,58 +112,32 @@ const MessagesData = () => {
         Messages for Employee ID: {employeeId}
       </h2>
       {filteredMessages.length > 0 ? (
-        <table className="min-w-full bg-white border border-gray-300  border-collapse shadow-lg rounded-lg overflow-hidden">
-          <thead className="bg-gradient-to-r from-purple-600 to-purple-400 text-white  ">
+        <table className="min-w-full bg-white border border-gray-300 border-collapse shadow-lg rounded-lg overflow-hidden">
+          <thead className="bg-gradient-to-r from-purple-600 to-purple-400 text-white">
             <tr className="text-white text-xl">
-              <th className="border border-gray-300 px-6 py-3 text-left  font-medium text-white">
-                Sl No
-              </th>
-              <th className="border border-gray-300 px-6 py-3 text-left  font-medium text-white">
-                Address
-              </th>
-              <th className="border border-gray-300 px-6 py-3 text-left  font-medium text-white">
-                Message Body
-              </th>
-              <th className="border border-gray-300 px-6 py-3 text-left  font-medium text-white">
-                Service Center
-              </th>
-              <th className="border border-gray-300 px-6 py-3 text-left  font-medium text-white">
-                Received Date
-              </th>
-              <th className="border border-gray-300 px-6 py-3 text-left  font-medium text-white">
-                Received Time
-              </th>
-              <th className="border border-gray-300 px-6 py-3 text-left  font-medium text-white">
-                Actions
-              </th>
+              <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">Sl No</th>
+              <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">Address</th>
+              <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">Message Body</th>
+              <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">Service Center</th>
+              <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">Received Date</th>
+              <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">Received Time</th>
+              <th className="border border-gray-300 px-6 py-3 text-left font-medium text-white">Actions</th>
             </tr>
           </thead>
           <tbody>
             {filteredMessages.map((msg, index) => (
-              <tr
-                key={msg._id}
-                className="hover:bg-gray-100 transition-colors duration-200 "
-              >
-                <td className="border border-gray-300 px-6 py-4">
-                  {index + 1}
-                </td>
-                <td className="border border-gray-300 px-6 py-4">
-                  {msg.address}
-                </td>
+              <tr key={msg._id} className="hover:bg-gray-100 transition-colors duration-200">
+                <td className="border border-gray-300 px-6 py-4">{index + 1}</td>
+                <td className="border border-gray-300 px-6 py-4">{msg.address}</td>
                 <td className="border border-gray-300 px-6 py-4">{msg.body}</td>
-                <td className="border border-gray-300 px-6 py-4">
-                  {msg.service_center}
-                </td>
-                <td className="border border-gray-300 px-6 py-4">
-                  {new Date(msg.date).toLocaleDateString()}
-                </td>
-                <td className="border border-gray-300 px-6 py-4">
-                  {new Date(msg.date).toLocaleTimeString()}
-                </td>
+                <td className="border border-gray-300 px-6 py-4">{msg.service_center}</td>
+                <td className="border border-gray-300 px-6 py-4">{new Date(msg.date).toLocaleDateString()}</td>
+                <td className="border border-gray-300 px-6 py-4">{new Date(msg.date).toLocaleTimeString()}</td>
                 <td className="border border-gray-300 px-6 py-4">
                   <button
                     onClick={() => handleDelete(msg._id)}
                     className="bg-gradient-to-r from-red-500 to-purple-700 hover:shadow-lg text-white px-4 py-2 rounded-lg"
+                    aria-label={`Delete message with ID ${msg._id}`}
                   >
                     Delete
                   </button>

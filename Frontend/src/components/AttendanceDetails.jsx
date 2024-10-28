@@ -3,7 +3,7 @@ import axios from "axios";
 import { useParams, Link, useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { BASE_URL } from './constants'
+import { BASE_URL } from './constants';
 
 const AttendanceDetails = () => {
   const [employee, setEmployee] = useState(null);
@@ -75,7 +75,7 @@ const AttendanceDetails = () => {
   };
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-gray-100 rounded-lg shadow-lg absolute top-20 right-10 left-[275px]">
+    <div className="p-6 max-w-7xl mx-auto bg-gray-100 rounded-lg shadow-lg absolute top-20 md:right-10 xs:right-0 xs:left-0 md:left-[275px]">
       <h2 className="text-4xl font-bold mb-6 text-center text-blue-600">
         Employee Attendance
       </h2>
@@ -87,7 +87,7 @@ const AttendanceDetails = () => {
           placeholder="Enter Employee ID"
           value={employeeId}
           onChange={(e) => setEmployeeId(e.target.value)}
-          className="border border-gray-300 rounded-md px-4 py-2 w-64 mr-2"
+          className="border border-gray-300 rounded-md px-4 py-2 w-full sm:w-64 mr-2"
         />
         <button
           type="submit"
@@ -111,7 +111,7 @@ const AttendanceDetails = () => {
         <p className="text-center text-red-500">{error}</p>
       ) : employee ? (
         <div className="mb-8">
-          <div className="flex justify-center space-x-4 mb-6">
+          <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-4 mb-6">
             {/* Leave Request Button */}
             <Link to={`/employees/${employeeId}/attendance-list/leaves`}>
               <button className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition duration-300">
@@ -146,53 +146,31 @@ const AttendanceDetails = () => {
             </p>
           </div>
 
-          <table className="min-w-full bg-white mt-4 border border-gray-300 rounded-lg shadow-md">
-            <thead className="bg-gray-200">
-              <tr>
-                <th className="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-gray-600">
-                  Date
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-gray-600">
-                  Status
-                </th>
-              </tr>
-            </thead>
-            <tbody>
-              {fullMonthAttendance.map(({ date, status }) => (
-                <tr
-                  key={date.toDateString()}
-                  className="hover:bg-gray-100 transition-colors duration-200"
-                >
-                  <td className="border border-gray-300 px-4 py-2">
-                    {date.toDateString()}
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    {status ? (
-                      <span
-                        className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${
-                          status === "Present"
-                            ? "bg-green-100 text-green-600"
-                            : status === "Half Day"
-                            ? "bg-yellow-100 text-yellow-600"
-                            : status === "Leave"
-                            ? "bg-blue-100 text-blue-600"
-                            : "bg-red-100 text-red-600"
-                        }`}
-                      >
-                        {status}
-                      </span>
-                    ) : (
-                      <span className="text-gray-500">No record</span>
-                    )}
-                  </td>
-                </tr>
+          <div className="mt-4">
+            <h3 className="text-xl font-semibold">Attendance Records</h3>
+            <ul className="space-y-2">
+              {fullMonthAttendance.map((record, index) => (
+                <li key={index} className="flex justify-between bg-white p-2 rounded shadow">
+                  <span>{record.date.toLocaleDateString()}</span>
+                  <span
+                    className={`font-bold ${
+                      record.status === "Present"
+                        ? "text-green-600"
+                        : record.status === "Half Day"
+                        ? "text-yellow-600"
+                        : record.status === "Leave"
+                        ? "text-blue-600"
+                        : "text-red-600"
+                    }`}
+                  >
+                    {record.status || "Absent"}
+                  </span>
+                </li>
               ))}
-            </tbody>
-          </table>
+            </ul>
+          </div>
         </div>
-      ) : (
-        <p className="text-center text-gray-500">Employee not found.</p>
-      )}
+      ) : null}
     </div>
   );
 };

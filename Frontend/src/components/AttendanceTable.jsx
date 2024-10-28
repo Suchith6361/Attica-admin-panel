@@ -17,7 +17,7 @@ const AttendanceTable = () => {
     if (attendanceStatus.isPresent) return "Present";
     if (attendanceStatus.isHalfDay) return "Half Day";
     if (attendanceStatus.isLeave) return "Leave";
-    return "Absent"; // Default case
+    return "Absent"; 
   };
 
   useEffect(() => {
@@ -29,6 +29,7 @@ const AttendanceTable = () => {
 
         setAttendance(attendanceData);
         setEmployee(employeeDetails);
+        console.log("Fetched Attendance Data:", attendanceData); 
       } catch (err) {
         setError("Error fetching employee data. Please try again later.");
         console.error("Error fetching employee data:", err);
@@ -40,7 +41,6 @@ const AttendanceTable = () => {
     fetchEmployeeAttendance();
   }, [employeeId]);
 
-  // Generate the days for the selected month
   const generateMonthDays = (year, month) => {
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const days = [];
@@ -50,17 +50,12 @@ const AttendanceTable = () => {
     return days;
   };
 
-  // Map attendance data to each day of the month
-  // Map attendance data to each day of the month
   const fullMonthAttendance = generateMonthDays(date.getFullYear(), date.getMonth()).map((day) => {
-    // Find the attendance record for the current day
     const record = attendance.find(att => {
       const attendanceDate = att.location.time ? new Date(att.location.time).toDateString() : null;
-      console.log("Comparing:", attendanceDate, "with", day.toDateString());
       return attendanceDate === day.toDateString();
     });
 
-    // Get the attendance status or indicate no records
     const status = record ? getStatus(record.AttendanceStatus) : "No records";
 
     return {
@@ -70,7 +65,7 @@ const AttendanceTable = () => {
   });
 
   return (
-    <div className="p-6 max-w-7xl mx-auto bg-gray-100 rounded-lg shadow-lg absolute top-20 right-10 left-[275px]">
+    <div className="p-6 max-w-7xl mx-auto bg-gray-100 rounded-lg shadow-lg absolute top-20 right-10 xs:left-0 xs:right-0 md:left-[275px]">
       <h2 className="text-4xl font-bold mb-6 text-center text-blue-600">Employee Attendance</h2>
 
       {employee && (
@@ -83,9 +78,9 @@ const AttendanceTable = () => {
         </div>
       )}
 
-      <div className="flex justify-center space-x-4 mb-6">
+      <div className="flex flex-col md:flex-row justify-center space-x-0 md:space-x-4 mb-6">
         <Link to={`/employees/${employeeId}/attendance-list/leaves`}>
-          <button className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition duration-300">
+          <button className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-2 md:mb-0">
             View Leave Requests
           </button>
         </Link>
@@ -119,22 +114,8 @@ const AttendanceTable = () => {
             <tbody>
               {fullMonthAttendance.map(({ date, status }) => (
                 <tr key={date.toDateString()} className="hover:bg-gray-100 transition-colors duration-200">
-                  <td className="border border-gray-300 px-4 py-2">{date.toDateString()}</td>
-                  <td className="border border-gray-300 px-4 py-2">
-                    <span
-                      className={`inline-block px-3 py-1 rounded-full text-sm font-bold ${
-                        status === "Present"
-                          ? "bg-green-100 text-green-600"
-                          : status === "Half Day"
-                          ? "bg-yellow-100 text-yellow-600"
-                          : status === "Leave"
-                          ? "bg-blue-100 text-blue-600"
-                          : "bg-gray-100 text-gray-600"
-                      }`}
-                    >
-                      {status}
-                    </span>
-                  </td>
+                  <td className="border border-gray-300 px-4 py-2 text-gray-800">{date.toDateString()}</td>
+                  <td className="border border-gray-300 px-4 py-2 text-gray-800">{status}</td>
                 </tr>
               ))}
             </tbody>

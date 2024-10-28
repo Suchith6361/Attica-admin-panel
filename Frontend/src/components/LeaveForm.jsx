@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { BASE_URL } from './constants'
+import { BASE_URL } from './constants';
 
 const LeaveForm = () => {
   const { employeeId, name, mobileNumber } = useParams();
@@ -39,7 +39,7 @@ const LeaveForm = () => {
   );
 
   return (
-    <div className="p-6 bg-gradient-to-b from-blue-100 to-blue-200 min-h-screen absolute top-20 right-10 left-[275px]">
+    <div className="p-4 sm:p-6 bg-gradient-to-b from-blue-100 to-blue-200 min-h-screen absolute top-10 md:left-[260px] right-0 left-0">
       {/* Employee Information */}
       <div className="bg-gradient-to-r from-green-500 to-teal-500 p-4 rounded-lg shadow-lg mb-6 hover:shadow-xl transition-shadow duration-300">
         <h2 className="text-2xl font-bold text-white">Employee Information</h2>
@@ -60,7 +60,7 @@ const LeaveForm = () => {
           {sortedLeaveRequests.map((request, index) => (
             <div
               key={index}
-              className="bg-white p-4 rounded-lg shadow-lg border-l-4 border-blue-600 relative transition-transform duration-300 hover:scale-105 hover:shadow-xl"
+              className="bg-white p-4 rounded-lg shadow-lg border-l-4 border-blue-600 relative transition-transform duration-300 hover:scale-105 hover:shadow-xl hover:bg-gradient-to-r from-yellow-300 via-red-200 to-pink-300 relative"
             >
               <h3 className="text-xl font-semibold text-blue-700">
                 <span className="text-red-600">Leave Type: {request.leaveType}</span>
@@ -75,11 +75,14 @@ const LeaveForm = () => {
                 End Date: {new Date(request.endDate).toLocaleDateString()}
               </p>
 
-              <p className="text-gray-700 absolute right-4 top-4">
-                Applied Date: {new Date(request.createdAt).toLocaleDateString()}
-                <br />
-                Applied Time: {new Date(request.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-              </p>
+              <div className="flex flex-col md:flex-row md:justify-between">
+                <p className="text-blue-700">
+                  Applied Date: {new Date(request.createdAt).toLocaleDateString()}
+                </p>
+                <p className="text-blue-700">
+                  Applied Time: {new Date(request.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                </p>
+              </div>
             </div>
           ))}
         </div>
