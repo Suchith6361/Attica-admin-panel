@@ -22,6 +22,7 @@ const {
   Complaint,
   Leaves,
   Salary,
+  userDetails,
   AttendanceList,
 } = require("./Model/Model");
 console.log("Models loaded.");
@@ -70,9 +71,28 @@ app.get("/employees", async (req, res) => {
     const employees = await Employee.find();
     console.log(employees); // Log the employees fetched
     res.status(200).json(employees);
+   
   } catch (error) {
     console.error("Error fetching employees:", error);
     res.status(500).json({ error: "Error fetching employees" });
+  }
+});
+
+// Get employee details by employeeId
+app.get('/employees/:employeeId', async (req, res) => {
+  const { employeeId } = req.params;
+  
+  try {
+    const employee = await  userDetails.findOne({ employeeId }); // Adjust if `employeeId` is stored differently
+
+    if (!employee) {
+      return res.status(404).json({ message: 'Employee not found' });
+    }
+
+    res.json(employee);
+  } catch (error) {
+    console.error('Error fetching employee details:', error);
+    res.status(500).json({ message: 'Server error, please try again later' });
   }
 });
 
@@ -81,7 +101,7 @@ app.get("/employees", async (req, res) => {
 app.get("/employees/:employeeId", async (req, res) => {
   try {
     // Fetch the employee using employeeId from the request params
-    const employee = await Employee.findOne({
+    const employee = await userDetails.findOne({
       employeeId: req.params.employeeId,
     });
 
@@ -92,6 +112,7 @@ app.get("/employees/:employeeId", async (req, res) => {
 
     // Return employee details if found
     res.status(200).json(employee);
+   
   } catch (error) {
     console.error("Error fetching employee details:", error);
     res.status(500).json({ error: "Error fetching employee details" });
@@ -159,9 +180,13 @@ app.get("/employees/:employeeId/total-messages", async (req, res) => {
 
 
 
+
+
+
+
 app.get("/employees/:employeeId/attendance-list", async (req, res) => {
   try {
-    const employee = await Employee.findOne({
+    const employee = await userDetails.findOne({
       employeeId: req.params.employeeId,
     });
     if (!employee) {
@@ -179,16 +204,18 @@ app.get("/employees/:employeeId/attendance-list", async (req, res) => {
 
     res.status(200).json({
       employeeId: employee.employeeId,
+      userName: employee.userName,
       name: employee.name,
       mobileNumber: employee.mobileNumber,
       attendance: attendance,
+      branch: employee.branch,
+      designation: employee.designation,
     });
   } catch (error) {
     console.error("Error fetching employee data:", error);
     res.status(500).json({ error: "Error fetching employee data" });
   }
 });
-
 
 
 
@@ -521,6 +548,112 @@ app.get("/employees/:employeeId/salaries", async (req, res) => {
     res.status(500).json({ error: "Error fetching salary" });
   }
 });
+
+app.get('/employees/:employeeId/details', async (req, res) => {
+  const { employeeId } = req.params;
+  
+  try {
+    // Fetch employee by employeeId
+    const employee = await userDetails.findOne({ employeeId });
+    
+    if (!employee) {
+      return res.status(404).json({ message: 'Employee not found' });
+    }
+
+    res.json(employee);
+  } catch (error) {
+    console.error("Error fetching employee data:", error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post('/employees/:employeeId/status', async (req, res) => {
+  const { employeeId } = req.params;
+  const { status } = req.body; // Expecting status to be either 'Approved' or 'Rejected'
+  
+  try {
+      // Validate status
+      if (status !== 'Approved' && status !== 'Rejected') {
+          return res.status(400).json({ message: 'Invalid status value. Must be "Approved" or "Rejected".' });
+      }
+
+      // Update employee's ApproveStatus
+      const updatedEmployee = await userDetails.findOneAndUpdate(
+          { employeeId },
+          { ApproveStatus: status },
+          { new: true } // Return the updated document
+      );
+
+      if (!updatedEmployee) {
+          return res.status(404).json({ message: 'Employee not found' });
+      }
+
+      res.status(200).json(updatedEmployee);
+  } catch (error) {
+      console.error("Error updating employee status:", error);
+      res.status(500).json({ message: 'Server error' });
+  }
+});
+
+app.post("/employees/:employeeId/status", async (req, res) => {
+  try {
+    const { employeeId } = req.params;
+    const { status, leaveId } = req.body;  // Assuming you pass the leaveId to identify the leave request
+
+    // Find the leave request and update its status
+    const updatedLeave = await Leaves.findOneAndUpdate(
+      { employeeId, _id: leaveId },  // Find the leave request for the employee
+      { status: status },             // Update the status field
+      { new: true }                   // Return the updated document
+    );
+
+    if (!updatedLeave) {
+      return res.status(404).json({ error: "Leave request not found" });
+    }
+
+    res.status(200).json(updatedLeave);  // Send the updated leave back
+  } catch (error) {
+    console.error("Error updating leave status:", error);
+    res.status(500).json({ error: "Error updating leave status" });
+  }
+});
+
+
+// app.post('/employees/:employeeId/leaves', async (req, res) => {
+//   try {
+//     const { employeeId } = req.params; // Capture the employeeId from URL parameters
+//     const { startDate, endDate, reason, leaveType, to } = req.body; // Get leave request data from the request body
+
+//     // Create a new leave request document
+//     const newLeaveRequest = new Leave({
+//       startDate,
+//       endDate,
+//       reason,
+//       leaveType,
+//       to,
+//       employeeId, // Optionally, you can store the employeeId if necessary
+//     });
+
+//     // Save the new leave request to the database
+//     const savedLeaveRequest = await newLeaveRequest.save();
+
+//     // Respond with the saved leave request data
+//     res.status(201).json(savedLeaveRequest);
+//   } catch (err) {
+//     console.error("Error creating leave request:", err);
+//     res.status(500).json({ message: "Internal server error" });
+//   }
+// });
+// app.get("/employees/:employeeId/attendance-list/leaves", async (req, res) => {
+//   try {
+//     const { employeeId } = req.params;
+//     const leaves = await Leaves.find({ employeeId });
+//     res.status(200).json(leaves);
+//   } catch (error) {
+//     console.error("Error fetching complaints:", error);
+//     res.status(500).json({ error: "Error fetching complaints" });
+//   }
+// });
 
 
 
