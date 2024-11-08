@@ -10,18 +10,16 @@ const AttendanceDetails = () => {
   const [attendance, setAttendance] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
-  const [employeeId, setEmployeeId] = useState(""); // Employee ID state
+  const [employeeId, setEmployeeId] = useState("");
   const [date, setDate] = useState(new Date());
-  const navigate = useNavigate(); // For navigation if needed
+  const navigate = useNavigate();
 
-  // Function to handle fetching employee attendance based on the entered employeeId
+  // Fetch attendance records based on the entered employee ID
   const fetchEmployeeAttendance = async (id) => {
     setLoading(true);
-    setError(null); // Reset the error
+    setError(null);
     try {
-      const response = await axios.get(
-        `${BASE_URL}/employees/${id}/attendance-list`
-      );
+      const response = await axios.get(`${BASE_URL}/employees/${id}/attendance-list`);
       setEmployee(response.data);
       setAttendance(response.data.attendanceRecords || []);
     } catch (err) {
@@ -32,7 +30,6 @@ const AttendanceDetails = () => {
     }
   };
 
-  // Generate days for the current selected month
   const generateMonthDays = (year, month) => {
     const daysInMonth = new Date(year, month + 1, 0).getDate();
     const days = [];
@@ -42,35 +39,27 @@ const AttendanceDetails = () => {
     return days;
   };
 
-  const fullMonthAttendance = generateMonthDays(
-    date.getFullYear(),
-    date.getMonth()
-  ).map((day) => {
+  const fullMonthAttendance = generateMonthDays(date.getFullYear(), date.getMonth()).map((day) => {
     const record = attendance.find(
       (att) => new Date(att.location.time).toDateString() === day.toDateString()
     );
     let status = null;
     if (record) {
-      if (record.AttendanceStatus.isPresent) {
-        status = "Present";
-      } else if (record.AttendanceStatus.isHalfDay) {
-        status = "Half Day";
-      } else if (record.AttendanceStatus.isLeave) {
-        status = "Leave";
-      } else {
-        status = "Absent";
-      }
+      if (record.AttendanceStatus.isPresent) status = "Present";
+      else if (record.AttendanceStatus.isHalfDay) status = "Half Day";
+      else if (record.AttendanceStatus.isLeave) status = "Leave";
+      else status = "Absent";
     }
     return {
       date: day,
-      status,
+      status: status || "Absent",
     };
   });
 
   const handleSearch = (e) => {
     e.preventDefault();
     if (employeeId.trim()) {
-      fetchEmployeeAttendance(employeeId); // Fetch attendance when search is submitted
+      fetchEmployeeAttendance(employeeId);
     }
   };
 
@@ -80,7 +69,6 @@ const AttendanceDetails = () => {
         Employee Attendance
       </h2>
 
-      {/* Search Bar */}
       <form onSubmit={handleSearch} className="mb-4 text-center">
         <input
           type="text"
@@ -100,8 +88,7 @@ const AttendanceDetails = () => {
       <div className="mb-6">
         <Calendar onChange={setDate} value={date} className="mx-auto" />
         <p className="text-center text-gray-600 mt-2">
-          Selected Month:{" "}
-          {date.toLocaleString("default", { month: "long", year: "numeric" })}
+          Selected Month: {date.toLocaleString("default", { month: "long", year: "numeric" })}
         </p>
       </div>
 
@@ -112,7 +99,6 @@ const AttendanceDetails = () => {
       ) : employee ? (
         <div className="mb-8">
           <div className="flex flex-col md:flex-row justify-center space-y-4 md:space-y-0 md:space-x-4 mb-6">
-            {/* Leave Request Button */}
             <Link to={`/employees/${employeeId}/attendance-list/leaves`}>
               <button className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition duration-300">
                 View Leave Requests
@@ -128,22 +114,11 @@ const AttendanceDetails = () => {
 
           <div className="bg-blue-500 text-white p-4 rounded-lg">
             <h3 className="text-2xl font-semibold">Employee Details</h3>
-            <p>
-              <strong>ID:</strong> {employee.employeeId}
-            </p>
-            <p>
-              <strong>Name:</strong> {employee.name}
-            </p>
-            <p>
-              <strong>Mobile Number:</strong> {employee.mobileNumber}
-            </p>
-            <p>
-              <strong>Selected Month:</strong>{" "}
-              {date.toLocaleString("default", {
-                month: "long",
-                year: "numeric",
-              })}
-            </p>
+            <p><strong>ID:</strong> {employee.employeeId}</p>
+            <p><strong>Name:</strong> {employee.name}</p>
+            <p><strong>Mobile Number:</strong> {employee.mobileNumber}</p>
+            <p><strong>Branch:</strong> {employee.branch}</p>
+            <p><strong>Designation:</strong> {employee.designation}</p>
           </div>
 
           <div className="mt-4">
@@ -152,18 +127,8 @@ const AttendanceDetails = () => {
               {fullMonthAttendance.map((record, index) => (
                 <li key={index} className="flex justify-between bg-white p-2 rounded shadow">
                   <span>{record.date.toLocaleDateString()}</span>
-                  <span
-                    className={`font-bold ${
-                      record.status === "Present"
-                        ? "text-green-600"
-                        : record.status === "Half Day"
-                        ? "text-yellow-600"
-                        : record.status === "Leave"
-                        ? "text-blue-600"
-                        : "text-red-600"
-                    }`}
-                  >
-                    {record.status || "Absent"}
+                  <span className={`font-bold ${getStatusColor(record.status)}`}>
+                    {record.status}
                   </span>
                 </li>
               ))}
@@ -173,6 +138,16 @@ const AttendanceDetails = () => {
       ) : null}
     </div>
   );
+};
+
+const getStatusColor = (status) => {
+  return status === "Present"
+    ? "text-green-600"
+    : status === "Half Day"
+    ? "text-yellow-600"
+    : status === "Leave"
+    ? "text-blue-600"
+    : "text-red-600";
 };
 
 export default AttendanceDetails;

@@ -45,36 +45,15 @@ const Employee = () => {
   };
 
   const EmployeeRow = ({ employee, index }) => (
-    <tr
-      key={employee._id}
-      className="hover:bg-gray-100 transition-colors duration-200"
-    >
+    <tr key={employee._id} className="hover:bg-gray-100 transition-colors duration-200">
       <td className="border border-gray-300 px-4 py-2 text-center">{index + 1}</td>
       <td className="border border-gray-300 px-4 py-2">{employee.employeeId}</td>
       <td className="border border-gray-300 px-4 py-2">{employee.name}</td>
       <td className="border border-gray-300 px-4 py-2">{employee.mobileNumber}</td>
       <td className="border border-gray-300 px-4 py-2">
-        <button
-          onClick={() => goToCallDetails(employee.employeeId)}
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2"
-          aria-label="View call logs"
-        >
-          Calls
-        </button>
-        <button
-          onClick={() => goToMessageDetails(employee.employeeId)}
-          className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-2"
-          aria-label="View messages"
-        >
-          Messages
-        </button>
-        <button
-          onClick={() => goToAttendanceDetails(employee.employeeId)}
-          className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded"
-          aria-label="View attendance list"
-        >
-          Attendance
-        </button>
+        <button onClick={() => goToCallDetails(employee.employeeId)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2" aria-label="View call logs">Calls</button>
+        <button onClick={() => goToMessageDetails(employee.employeeId)} className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-2" aria-label="View messages">Messages</button>
+        <button onClick={() => goToAttendanceDetails(employee.employeeId)} className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded" aria-label="View attendance list">Attendance</button>
       </td>
       <td className="border border-gray-300 px-4 py-2 flex items-center justify-center">
         {employee.isActive ? (
@@ -103,12 +82,7 @@ const Employee = () => {
       ) : error ? (
         <div className="text-center text-red-500">
           <p>{error}</p>
-          <button
-            onClick={retryFetch}
-            className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
-          >
-            Retry
-          </button>
+          <button onClick={retryFetch} className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">Retry</button>
         </div>
       ) : employees.length > 0 ? (
         <div className="overflow-x-auto">

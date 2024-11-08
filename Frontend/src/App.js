@@ -20,6 +20,8 @@ import AttendanceTable from "./components/AttendanceTable";
 import AttendanceDetails from "./components/AttendanceDetails";
 import Complaints from "./components/Complaints";
 import LeaveForm from "./components/LeaveForm";
+import UserRequest from "./components/UserRequest";
+import EmployeeDetails from "./components/EmployeeDetails";
 
 // Private Route component (for protected routes)
 const PrivateRoute = ({ children }) => {
@@ -127,6 +129,14 @@ function Layout() {
               path="/employees/:employeeId/attendance-list/leaves"
               element={<LeaveForm />}
             />
+
+            <Route path="/user-request" element={<UserRequest/>} />
+
+            <Route
+              path="/employees/:employeeId/details"
+              element={<EmployeeDetails />}
+            />
+
           </Routes>
         </main>
       </div>

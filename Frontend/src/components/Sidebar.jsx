@@ -1,25 +1,33 @@
-import { Link } from "react-router-dom";
-import {
-  FaPhone,
-  FaEnvelope,
-  FaTachometerAlt,
-  FaUsers,
-  FaClipboardList,
-  FaMapMarkerAlt,
-} from "react-icons/fa";
-import { useState } from "react";
-import { BASE_URL } from './constants';
+import React, { useState, useEffect } from "react"; 
+import { Link } from "react-router-dom"; 
+import { FaPhone, FaEnvelope, FaTachometerAlt, FaUsers, FaClipboardList, FaMapMarkerAlt, FaUser } from "react-icons/fa"; 
+import { BASE_URL } from './constants'; // Make sure to import your BASE_URL if needed
 
 const Sidebar = () => {
   const [isOpen, setIsOpen] = useState(false); // State to toggle sidebar
+  const [newEmployeeCount, setNewEmployeeCount] = useState(0); // State for new employee count
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen); // Toggle sidebar open/close
   };
 
+  // Simulate fetching new employee count (replace this with your actual fetching logic)
+  useEffect(() => {
+    const fetchNewEmployeeCount = async () => {
+      try {
+        const response = await fetch(`${BASE_URL}/employees/new-count`); // Update with your actual endpoint
+        const data = await response.json();
+        setNewEmployeeCount(data.count); // Assuming the API returns an object with the count
+      } catch (error) {
+        console.error("Error fetching new employee count:", error);
+      }
+    };
+
+    fetchNewEmployeeCount(); // Call the function to fetch new employee count
+  }, []); // This effect runs once on component mount; adjust the dependencies as needed
+
   return (
     <>
-      {/* Toggle Button for Mobile View */}
       <button
         onClick={toggleSidebar}
         className="fixed top-4 left-4 z-50 text-white bg-gray-800 p-2 rounded-md md:hidden"
@@ -27,70 +35,47 @@ const Sidebar = () => {
         {isOpen ? "Close" : "Menu"}
       </button>
 
-      {/* Sidebar */}
-      <aside
-        className={`fixed top-0 left-0 h-full w-64 bg-gray-800 text-white p-4 transform ${
-          isOpen ? "translate-x-0" : "-translate-x-full"
-        } transition-transform duration-300 md:translate-x-0 z-40`}
-      >
+      <aside className={`fixed top-0 left-0 h-full w-64 bg-gray-800 text-white p-4 transform ${isOpen ? "translate-x-0" : "-translate-x-full"} transition-transform duration-300 md:translate-x-0 z-40`}>
         <nav className="space-y-4 mt-16">
-          {/* Dashboard Link */}
-          <Link
-            to="/"
-            className="flex text-[20px] items-center space-x-2 p-2 hover:bg-gray-700 rounded"
-          >
+          <Link to="/" className="flex text-[20px] items-center space-x-2 p-2 hover:bg-gray-700 rounded">
             <FaTachometerAlt className="text-yellow-400" />
             <span>Dashboard</span>
           </Link>
 
-          {/* Employee List Link */}
-          <Link
-            to="/employees"
-            className="text-[20px] flex items-center space-x-2 p-2 hover:bg-gray-700 rounded"
-          >
+          <Link to="/employees" className="text-[20px] flex items-center space-x-2 p-2 hover:bg-gray-700 rounded">
             <FaUsers className="text-purple-400" />
             <span>Employee List</span>
           </Link>
 
-          {/* Call Log Link */}
-          <Link
-            to="/call-details"
-            className="flex text-[20px] items-center space-x-2 p-2 hover:bg-gray-700 rounded"
-          >
+          <Link to="/call-details" className="flex text-[20px] items-center space-x-2 p-2 hover:bg-gray-700 rounded">
             <FaPhone className="text-blue-400" />
             <span>Call Log</span>
           </Link>
 
-          {/* Messages Link */}
-          <Link
-            to="/messages"
-            className="flex text-[20px] items-center space-x-2 p-2 hover:bg-gray-700 rounded"
-          >
+          <Link to="/messages" className="flex text-[20px] items-center space-x-2 p-2 hover:bg-gray-700 rounded">
             <FaEnvelope className="text-green-400" />
             <span>Messages</span>
           </Link>
 
-          {/* Location Link */}
-          <Link
-            to="/location"
-            className="text-[20px] flex items-center space-x-2 p-2 hover:bg-gray-700 rounded"
-          >
+          <Link to="/location" className="text-[20px] flex items-center space-x-2 p-2 hover:bg-gray-700 rounded">
             <FaMapMarkerAlt className="text-red-400" />
             <span>Location</span>
           </Link>
 
-          {/* Attendance Link */}
-          <Link
-            to="/attendance-details"
-            className="text-[20px] flex items-center space-x-2 p-2 hover:bg-gray-700 rounded"
-          >
+          <Link to="/attendance-details" className="text-[20px] flex items-center space-x-2 p-2 hover:bg-gray-700 rounded">
             <FaClipboardList className="text-orange-400" />
             <span>Attendance</span>
+          </Link>
+
+          {/* User Requests Link */}
+          <Link to="/user-request" className="text-[20px] flex items-center space-x-2 p-2 hover:bg-gray-700 rounded">
+            <FaUser className="text-teal-400" />
+            <span>User Requests</span>
+            {newEmployeeCount > 0 && <span className="ml-2 text-red-500">{newEmployeeCount}</span>} {/* Display new employee count */}
           </Link>
         </nav>
       </aside>
 
-      {/* Overlay for Mobile View */}
       {isOpen && (
         <div
           className="fixed inset-0 bg-black opacity-50 z-30 md:hidden"

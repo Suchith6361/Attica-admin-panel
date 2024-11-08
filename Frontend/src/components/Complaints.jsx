@@ -4,7 +4,7 @@ import { useParams } from "react-router-dom";
 import { BASE_URL } from './constants';
 
 const Complaints = () => {
-  const { employeeId, name, mobileNumber } = useParams();
+  const { employeeId, name, mobileNumber,branch,designation } = useParams();
   const [employee, setEmployee] = useState({});
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -45,6 +45,8 @@ const Complaints = () => {
         <p className="text-lg text-white">ID: {employee.employeeId || employeeId}</p>
         <p className="text-lg text-white">Name: {employee.name || name}</p>
         <p className="text-lg text-white">Number: {employee.mobileNumber || mobileNumber}</p>
+        <p className="text-lg text-white">Branch: {employee.branch || branch}</p>
+        <p className="text-lg text-white">Designation: {employee.designation || designation}</p>
       </div>
 
       {/* Complaints List */}

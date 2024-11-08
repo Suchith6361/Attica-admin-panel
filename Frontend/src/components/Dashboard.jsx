@@ -65,12 +65,12 @@ const Dashboard = () => {
       fetchEmployeeData(inputEmployeeId);
     } else {
       setError("Please enter a valid Employee ID.");
-      setEmployee({ name: "", employeeId: "", mobileNumber: "" });
+      setEmployee({ name: "", employeeId: "", mobileNumber: "" ,branch:" ", });
     }
   };
 
   return (
-    <div className="p-4 xs:p-5 sm:p-6 md:p-8 absolute md:left-[270px] lg:top-20 lg:right-0 xs:top-20">
+    <div className="p-4 xs:p-5 sm:p-6 md:p-8 absolute md:left-[270px] lg:top-20 lg:right-0 xs:top-20 xs:right-10 xs:left-10">
       <form
         onSubmit={handleSearchSubmit}
         className="mb-6 flex flex-col xs:flex-row items-center justify-center gap-2"
@@ -103,6 +103,12 @@ const Dashboard = () => {
         </p>
         <p className="text-gray-700 text-lg xs:text-xl">
           Basic Salary: {basicSalary || "N/A"}
+        </p>
+        <p className="text-gray-700 text-lg xs:text-xl">
+          Branch: {employee.branch || "N/A"}
+        </p>
+        <p className="text-gray-700 text-lg xs:text-xl">
+          Designation: {employee.designation || "N/A"}
         </p>
       </div>
 
