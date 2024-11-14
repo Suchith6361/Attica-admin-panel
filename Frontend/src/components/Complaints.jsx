@@ -66,7 +66,7 @@ const Complaints = () => {
             return (
               <div
                 key={index}
-                className="bg-white p-4 rounded-lg shadow-lg border-l-4 border-purple-500 transition duration-300 ease-in-out hover:scale-105 hover:bg-gradient-to-r from-yellow-300 via-red-200 to-pink-300 relative"
+                className="bg-white p-4 rounded-lg shadow-lg border-l-4 border-purple-500 transition duration-400 ease-in-out hover:scale-95 hover:bg-gradient-to-r from-red-300 via-blue-300 to-blue-100 relative"
               >
                 <span className="text-xl font-semibold">Title:</span>{" "}
                 <h3 className="text-xl font-bold mb-2">{complaint.title}</h3>

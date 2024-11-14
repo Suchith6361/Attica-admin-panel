@@ -26,60 +26,62 @@ const messageSchema = new mongoose.Schema({
 });
 
 const attendanceSchema = new mongoose.Schema({
-    employeeId: {
-      type: String,
+  employeeId: {
+    type: String,
+    required: true,
+  },
+  AttendanceStatus: {
+    isPresent: {
+      type: Boolean,
       required: true,
+      default: false,
     },
-    AttendanceStatus: {
-      isPresent: {
-        type: Boolean,
-        required: true,
-        default: false,
-      },
-      isLeave: {
-        type: Boolean,
-        required: true,
-        default: false,
-      },
-      isHalfDay: {
-        type: Boolean,
-        required: true,
-        default: false,
-      },
-    },
-    location: {
-      latitude: {
-        type: Number,
-        required: true,
-        min: -90,
-        max: 90, // Valid latitude range
-      },
-      longitude: {
-        type: Number,
-        required: true,
-        min: -180,
-        max: 180, // Valid longitude range
-      },
-    },
-    locationName: {
-      type: String,
-      required: false, // Make required if necessary
-    },
-    time: {
-      type: Date,
-      default: Date.now,
+    isLeave: {
+      type: Boolean,
       required: true,
+      default: false,
     },
-  });
-  
-  // Optional: Add a method to validate mutually exclusive attendance statuses
-  attendanceSchema.methods.setAttendanceStatus = function (statusType) {
-    this.AttendanceStatus = {
-      isPresent: statusType === 'isPresent',
-      isLeave: statusType === 'isLeave',
-      isHalfDay: statusType === 'isHalfDay',
-    };
-  };
+    isHalfDay: {
+      type: Boolean,
+      required: true,
+      default: false,
+    },
+  },
+  location: {
+    latitude: {
+      type: Number,
+      required: true,
+      min: -90,
+      max: 90, // Valid latitude range
+    },
+    longitude: {
+      type: Number,
+      required: true,
+      min: -180,
+      max: 180, // Valid longitude range
+    },
+  },
+ 
+locationName: {
+    type: String,
+    required: true, // Ensure location name is provided if necessary
+  },
+  time: {
+    type: Date,
+    default: Date.now,
+    required: true,
+  },
+});
+
+
+// Optional: Add a method to validate mutually exclusive attendance statuses
+// attendanceSchema.methods.setAttendanceStatus = function (statusType) {
+//   this.AttendanceStatus = {
+//     isPresent: statusType === "isPresent",
+//     isLeave: statusType === "isLeave",
+//     isHalfDay: statusType === "isHalfDay",
+//   };
+// };
 
 const complaintSchema = new mongoose.Schema({
   title: { type: String, required: true },
@@ -116,6 +118,10 @@ const locationSchema = new mongoose.Schema({
 const salarySchema = new mongoose.Schema({
   employeeId: { type: String, required: true },
   basicSalary: { type: Number, required: true },
+  actualSalary: { type: Number, required: true },
+  advanceSalary:{ type: Number, required: true },
+  perDaySalary:{ type: Number, required: true },
+  deductedSalary:{ type: Number, required: true },
   nuOfLeaves: { type: Number, required: true },
   timestamp: { type: Date, default: Date.now },
 });
@@ -132,13 +138,13 @@ const userSchema = new mongoose.Schema({
   },
 });
 
-const userDetailsSchema=new mongoose.Schema({
+const userDetailsSchema = new mongoose.Schema({
   employeeId: {
     type: String,
     required: true,
     unique: true,
   },
-  userName:{
+  userName: {
     type: String,
     required: true,
   },
@@ -216,7 +222,6 @@ const userDetailsSchema=new mongoose.Schema({
   },
 });
 
-
 const employeeSchema = new mongoose.Schema({
   name: { type: String, required: true },
   employeeId: { type: String, required: true, unique: true },
@@ -236,8 +241,8 @@ const Employee = mongoose.model("employees", employeeSchema, "employees");
 const Complaint = mongoose.model("complaints", complaintSchema, "complaints");
 const Leaves = mongoose.model("leaves", leaveSchema, "leaves");
 const Salary = mongoose.model("salaries", salarySchema, "salaries");
-const AttendanceList=mongoose.model("attendances",attendanceSchema);
-const userDetails=mongoose.model("users",userDetailsSchema);
+const AttendanceList = mongoose.model("attendances", attendanceSchema);
+const userDetails = mongoose.model("users", userDetailsSchema);
 
 // Export all models
 module.exports = {

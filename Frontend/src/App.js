@@ -32,7 +32,7 @@ const PrivateRoute = ({ children }) => {
 function Layout() {
   const location = useLocation(); // This works inside Router
   return (
-    <div className="h-screen flex flex-col">
+    <div className="h-screen flex flex-col ">
       {/* Header */}
       <Header />
 

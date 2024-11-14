@@ -11,20 +11,20 @@ const Sidebar = () => {
     setIsOpen(!isOpen); // Toggle sidebar open/close
   };
 
-  // Simulate fetching new employee count (replace this with your actual fetching logic)
-  useEffect(() => {
-    const fetchNewEmployeeCount = async () => {
-      try {
-        const response = await fetch(`${BASE_URL}/employees/new-count`); // Update with your actual endpoint
-        const data = await response.json();
-        setNewEmployeeCount(data.count); // Assuming the API returns an object with the count
-      } catch (error) {
-        console.error("Error fetching new employee count:", error);
-      }
-    };
+  // // Simulate fetching new employee count (replace this with your actual fetching logic)
+  // useEffect(() => {
+  //   const fetchNewEmployeeCount = async () => {
+  //     try {
+  //       const response = await fetch(`${BASE_URL}/employees/new-count`); // Update with your actual endpoint
+  //       const data = await response.json();
+  //       setNewEmployeeCount(data.count); // Assuming the API returns an object with the count
+  //     } catch (error) {
+  //       console.error("Error fetching new employee count:", error);
+  //     }
+  //   };
 
-    fetchNewEmployeeCount(); // Call the function to fetch new employee count
-  }, []); // This effect runs once on component mount; adjust the dependencies as needed
+  //   fetchNewEmployeeCount(); // Call the function to fetch new employee count
+  // }, []); // This effect runs once on component mount; adjust the dependencies as needed
 
   return (
     <>

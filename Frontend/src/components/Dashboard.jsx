@@ -12,8 +12,10 @@ const Dashboard = () => {
   const [attendanceStatus, setAttendanceStatus] = useState("N/A");
   const [employee, setEmployee] = useState({});
   const [basicSalary, setBasicSalary] = useState("N/A");
+  const [advanceSalary, setAdvanceSalary] = useState("N/A");
   const [numberOfLeaves, setNumberOfLeaves] = useState("N/A");
   const [actualSalary, setActualSalary] = useState("N/A");
+  const [locations, setLocations] = useState([]);  // New state for storing location updates
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -25,8 +27,10 @@ const Dashboard = () => {
     setTotalMessages(0);
     setAttendanceStatus("N/A");
     setBasicSalary("N/A");
+    setAdvanceSalary("N/A");
     setNumberOfLeaves("N/A");
     setActualSalary("N/A");
+    setLocations([]);  // Reset locations
 
     try {
       const employeeResponse = await axios.get(`${BASE_URL}/employees/${id}`);
@@ -43,8 +47,12 @@ const Dashboard = () => {
 
       const salaryResponse = await axios.get(`${BASE_URL}/employees/${id}/salaries`);
       setBasicSalary(salaryResponse.data.basicSalary || "N/A");
+      setAdvanceSalary(salaryResponse.data.advanceSalary || "N/A");
       setNumberOfLeaves(salaryResponse.data.noOfLeaves || "N/A");
       setActualSalary(salaryResponse.data.actualSalary || "N/A");
+
+      // Fetch location updates from attendance response
+      setLocations(attendanceResponse.data.location || []);
     } catch (err) {
       setError("Error fetching employee data. Please check the Employee ID.");
       console.error("Error fetching employee data:", err);
@@ -65,7 +73,7 @@ const Dashboard = () => {
       fetchEmployeeData(inputEmployeeId);
     } else {
       setError("Please enter a valid Employee ID.");
-      setEmployee({ name: "", employeeId: "", mobileNumber: "" ,branch:" ", });
+      setEmployee({ name: "", employeeId: "", mobileNumber: "", branch: "", });
     }
   };
 
@@ -90,7 +98,7 @@ const Dashboard = () => {
         </button>
       </form>
 
-      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+      {error && <p className="text-red-500 text-center mb-4 ">{error}</p>}
 
       <div className="bg-gray-300 shadow-lg hover:shadow-xl transition-shadow shadow-violet-700 rounded-lg p-4 xs:p-5 sm:p-6 mb-6 flex flex-col">
         <h2 className="text-2xl xs:text-2xl sm:text-3xl font-bold mb-2 ">Employee Info</h2>
@@ -139,6 +147,7 @@ const Dashboard = () => {
             <p className="text-gray-800 mt-1 text-lg">Basic Salary: {basicSalary}</p>
             <p className="text-gray-800 mt-1 text-lg">Number of Leaves: {numberOfLeaves}</p>
             <p className="text-gray-800 mt-1 text-lg">Actual Salary: {actualSalary}</p>
+            <p className="text-gray-800 mt-1 text-lg">Advance Salary: {advanceSalary}</p>
           </div>
           <FaCheckCircle className="text-green-500 text-2xl sm:text-3xl" />
         </div>
@@ -146,15 +155,20 @@ const Dashboard = () => {
         <div className="bg-gray-300 shadow-lg rounded-lg p-4 xs:p-5 sm:p-6 flex items-center justify-between shadow-red-500 hover:shadow-xl transition-shadow">
           <div>
             <h2 className="text-xl xs:text-2xl sm:text-2xl font-bold">Location Updates</h2>
-            <p className="text-gray-800 mt-1 text-lg">50 updates</p>
+            {/* Displaying the location updates from attendance data */}
+            {locations.length > 0 ? (
+              locations.map((location, index) => (
+                <p key={index} className="text-gray-800 mt-1 text-lg">
+                  {location.locationName} at {location.time}
+                </p>
+              ))
+            ) : (
+              <p className="text-gray-800 mt-1 text-lg">No location updates available.</p>
+            )}
           </div>
           <FaMapMarkerAlt className="text-red-500 text-2xl sm:text-3xl" />
         </div>
       </div>
-
-      {loading && (
-        <p className="text-center text-blue-500 mt-4">Fetching data...</p>
-      )}
     </div>
   );
 };

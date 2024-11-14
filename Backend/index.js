@@ -27,8 +27,8 @@ const {
 } = require("./Model/Model");
 console.log("Models loaded.");
 
-app.get('/', (req, res) => {
-  res.send('Hello World!');
+app.get("/", (req, res) => {
+  res.send("Hello World!");
 });
 
 // User Registration
@@ -68,10 +68,9 @@ app.post("/login", async (req, res) => {
 
 app.get("/employees", async (req, res) => {
   try {
-    const employees = await Employee.find();
+    const employees = await userDetails.find();
     console.log(employees); // Log the employees fetched
     res.status(200).json(employees);
-   
   } catch (error) {
     console.error("Error fetching employees:", error);
     res.status(500).json({ error: "Error fetching employees" });
@@ -79,45 +78,44 @@ app.get("/employees", async (req, res) => {
 });
 
 // Get employee details by employeeId
-app.get('/employees/:employeeId', async (req, res) => {
+app.get("/employees/:employeeId", async (req, res) => {
   const { employeeId } = req.params;
-  
+
   try {
-    const employee = await  userDetails.findOne({ employeeId }); // Adjust if `employeeId` is stored differently
+    const employee = await userDetails.findOne({ employeeId }); // Adjust if `employeeId` is stored differently
 
     if (!employee) {
-      return res.status(404).json({ message: 'Employee not found' });
+      return res.status(404).json({ message: "Employee not found" });
     }
 
     res.json(employee);
   } catch (error) {
-    console.error('Error fetching employee details:', error);
-    res.status(500).json({ message: 'Server error, please try again later' });
+    console.error("Error fetching employee details:", error);
+    res.status(500).json({ message: "Server error, please try again later" });
   }
 });
-
 
 // Backend route to fetch employee details
-app.get("/employees/:employeeId", async (req, res) => {
-  try {
-    // Fetch the employee using employeeId from the request params
-    const employee = await userDetails.findOne({
-      employeeId: req.params.employeeId,
-    });
+// app.get("/employees/:employeeId", async (req, res) => {
+//   try {
+//     // Fetch the employee using employeeId from the request params
+//     const employee = await userDetails.findOne({
+//       employeeId: req.params.employeeId,
+//     });
 
-    // If employee not found, return 404
-    if (!employee) {
-      return res.status(404).json({ error: "Employee not found" });
-    }
+//     // If employee not found, return 404
+//     if (!employee) {
+//       return res.status(404).json({ error: "Employee not found" });
+//     }
 
-    // Return employee details if found
-    res.status(200).json(employee);
-   
-  } catch (error) {
-    console.error("Error fetching employee details:", error);
-    res.status(500).json({ error: "Error fetching employee details" });
-  }
-});
+//     // Return employee details if found
+//     res.status(200).json(employee);
+
+//   } catch (error) {
+//     console.error("Error fetching employee details:", error);
+//     res.status(500).json({ error: "Error fetching employee details" });
+//   }
+// });
 
 // Fetch employee's total call logs count by employeeId
 app.get("/employees/:employeeId/total-calls", async (req, res) => {
@@ -147,7 +145,6 @@ app.get("/employees/:employeeId/total-calls", async (req, res) => {
   }
 });
 
-
 // Example Express route for getting total messages
 app.get("/employees/:employeeId/total-messages", async (req, res) => {
   const { employeeId } = req.params;
@@ -174,15 +171,7 @@ app.get("/employees/:employeeId/total-messages", async (req, res) => {
     console.error("Error fetching total call logs:", error);
     res.status(500).json({ error: "Error fetching total call logs" });
   }
-
 });
-
-
-
-
-
-
-
 
 app.get("/employees/:employeeId/attendance-list", async (req, res) => {
   try {
@@ -193,21 +182,30 @@ app.get("/employees/:employeeId/attendance-list", async (req, res) => {
       return res.status(404).json({ error: "Employee not found" });
     }
 
-    // Fetch attendance records linked to the employeeId
-    const attendance = await AttendanceList.find({
-      employeeId: req.params.employeeId,
-    });
+    // Optional filter by date (if passed as a query parameter, e.g., `?date=YYYY-MM-DD`)
+    const { date } = req.query;
+    let attendanceQuery = { employeeId: req.params.employeeId };
 
-    // Log both employee and attendance data
+    if (date) {
+      const startDate = new Date(date);
+      const endDate = new Date(startDate);
+      endDate.setDate(endDate.getDate() + 1); // Set end of the date
+
+      // Assuming `location.time` is the field containing the date information
+      attendanceQuery["location.time"] = { $gte: startDate, $lt: endDate };
+    }
+
+    const attendance = await AttendanceList.find(attendanceQuery);
+
     console.log("Employee Data: ", employee);
-    console.log("Attendance Records: ", attendance); // Debugging line
+    console.log("Filtered Attendance Records: ", attendance); // Debugging line
 
     res.status(200).json({
       employeeId: employee.employeeId,
       userName: employee.userName,
       name: employee.name,
       mobileNumber: employee.mobileNumber,
-      attendance: attendance,
+      attendance,
       branch: employee.branch,
       designation: employee.designation,
     });
@@ -216,8 +214,6 @@ app.get("/employees/:employeeId/attendance-list", async (req, res) => {
     res.status(500).json({ error: "Error fetching employee data" });
   }
 });
-
-
 
 
 
@@ -327,8 +323,6 @@ app.get("/employees/:employeeId/attendance-list/leaves", async (req, res) => {
   }
 });
 
-
-
 // Messages Endpoints
 app.get("/messages", async (req, res) => {
   try {
@@ -367,7 +361,6 @@ app.get("/locations", async (req, res) => {
     res.status(500).json({ error: "Error fetching locations" });
   }
 });
-
 
 app.post("/locations", async (req, res) => {
   try {
@@ -417,27 +410,6 @@ app.delete("/Delete-call-log/:employeeId/:callLogId", async (req, res) => {
     res.status(500).json({ error: "Error deleting call log" });
   }
 });
-
-// app.delete('/Delete-call-log/:employeeId/:callLogId', async (req, res) => {
-//     const { employeeId, callLogId } = req.params;
-
-//     try {
-//         const result = await Employee.updateOne(
-//             { employeeId: employeeId },
-//             { $pull: { callLogs: { _id: callLogId } } }
-//         );
-
-//         if (result.modifiedCount === 0) {
-//             return res.status(404).json({ error: "Call log not found." });
-//         }
-
-//         res.status(200).json({ message: "Call log deleted successfully." });
-//     } catch (error) {
-//         console.error("Error deleting call log:", error);
-//         res.status(500).json({ error: "Error deleting call log." });
-//     }
-// });
-
 
 //delete all call logs
 app.delete("/Delete-all-call-logs/:employeeId", async (req, res) => {
@@ -495,20 +467,23 @@ app.delete("/Delete-message/:employeeId/:messageId", async (req, res) => {
   }
 });
 
-app.delete('/Delete-call-log/:employeeId/:callLogId', async (req, res) => {
+app.delete("/Delete-call-log/:employeeId/:callLogId", async (req, res) => {
   const { employeeId, callLogId } = req.params;
 
   try {
-    const result = await CallLog.findOneAndDelete({ _id: callLogId, employeeId: employeeId });
-    
+    const result = await CallLog.findOneAndDelete({
+      _id: callLogId,
+      employeeId: employeeId,
+    });
+
     if (!result) {
-      return res.status(404).json({ message: 'Call log not found.' });
+      return res.status(404).json({ message: "Call log not found." });
     }
 
-    res.status(200).json({ message: 'Call log deleted successfully.' });
+    res.status(200).json({ message: "Call log deleted successfully." });
   } catch (error) {
     console.error("Error deleting call log:", error);
-    res.status(500).json({ message: 'Server error.' });
+    res.status(500).json({ message: "Server error." });
   }
 });
 
@@ -549,75 +524,105 @@ app.get("/employees/:employeeId/salaries", async (req, res) => {
   }
 });
 
-app.get('/employees/:employeeId/details', async (req, res) => {
+// To get the all details form of the employee
+app.get("/employees/:employeeId/details", async (req, res) => {
   const { employeeId } = req.params;
-  
+
   try {
     // Fetch employee by employeeId
     const employee = await userDetails.findOne({ employeeId });
-    
+
     if (!employee) {
-      return res.status(404).json({ message: 'Employee not found' });
+      return res.status(404).json({ message: "Employee not found" });
     }
 
     res.json(employee);
   } catch (error) {
     console.error("Error fetching employee data:", error);
-    res.status(500).json({ message: 'Server error' });
-  }
-});
-
-app.post('/employees/:employeeId/status', async (req, res) => {
-  const { employeeId } = req.params;
-  const { status } = req.body; // Expecting status to be either 'Approved' or 'Rejected'
-  
-  try {
-      // Validate status
-      if (status !== 'Approved' && status !== 'Rejected') {
-          return res.status(400).json({ message: 'Invalid status value. Must be "Approved" or "Rejected".' });
-      }
-
-      // Update employee's ApproveStatus
-      const updatedEmployee = await userDetails.findOneAndUpdate(
-          { employeeId },
-          { ApproveStatus: status },
-          { new: true } // Return the updated document
-      );
-
-      if (!updatedEmployee) {
-          return res.status(404).json({ message: 'Employee not found' });
-      }
-
-      res.status(200).json(updatedEmployee);
-  } catch (error) {
-      console.error("Error updating employee status:", error);
-      res.status(500).json({ message: 'Server error' });
+    res.status(500).json({ message: "Server error" });
   }
 });
 
 app.post("/employees/:employeeId/status", async (req, res) => {
+  const { employeeId } = req.params;
+  const { status } = req.body; // Expecting status to be 'Approved', 'Rejected', or 'Pending'
+
   try {
-    const { employeeId } = req.params;
-    const { status, leaveId } = req.body;  // Assuming you pass the leaveId to identify the leave request
-
-    // Find the leave request and update its status
-    const updatedLeave = await Leaves.findOneAndUpdate(
-      { employeeId, _id: leaveId },  // Find the leave request for the employee
-      { status: status },             // Update the status field
-      { new: true }                   // Return the updated document
-    );
-
-    if (!updatedLeave) {
-      return res.status(404).json({ error: "Leave request not found" });
+    // Validate status
+    if (
+      status !== "Approved" &&
+      status !== "Rejected" &&
+      status !== "Pending"
+    ) {
+      return res.status(400).json({
+        message:
+          'Invalid status value. Must be "Approved", "Rejected", or "Pending".',
+      });
     }
 
-    res.status(200).json(updatedLeave);  // Send the updated leave back
+    // Update employee's ApproveStatus
+    const updatedEmployee = await userDetails.findOneAndUpdate(
+      { employeeId },
+      { ApproveStatus: status },
+      { new: true } // Return the updated document
+    );
+
+    if (!updatedEmployee) {
+      return res.status(404).json({ message: "Employee not found" });
+    }
+
+    res.status(200).json(updatedEmployee);
   } catch (error) {
-    console.error("Error updating leave status:", error);
-    res.status(500).json({ error: "Error updating leave status" });
+    console.error("Error updating employee status:", error);
+    res.status(500).json({ message: "Server error" });
   }
 });
 
+app.post(
+  "/employees/:employeeId/attendance-list/leaves/:leaveId/status",
+  async (req, res) => {
+    const { employeeId, leaveId } = req.params;
+    const { status } = req.body; // Expecting status to be 'Approved', 'Rejected', or 'Pending'
+
+    try {
+      // Validate the status input
+      if (!["Approved", "Rejected", "Pending"].includes(status)) {
+        return res.status(400).json({
+          message:
+            'Invalid status value. Status must be "Approved", "Rejected", or "Pending".',
+        });
+      }
+
+      // Update the specific leave request's status for the given employee
+      const updatedLeave = await Leaves.findOneAndUpdate(
+        { employeeId, _id: leaveId },
+        { ApproveStatus: status },
+        { new: true } // Return the updated document
+      );
+
+      // Check if the leave request was found and updated
+      if (!updatedLeave) {
+        return res.status(404).json({
+          message:
+            "Leave request not found for the specified employee or leave ID.",
+        });
+      }
+
+      // Send back the updated leave document with success status
+      res.status(200).json({
+        message: `Leave request status has been successfully updated to ${status}.`,
+        leaveRequest: updatedLeave,
+      });
+    } catch (error) {
+      console.error("Error updating leave status:", error);
+      res.status(500).json({
+        message:
+          "An internal server error occurred while updating the leave status. Please try again later.",
+        error: error.message,
+      });
+    }
+  }
+);
 
 // app.post('/employees/:employeeId/leaves', async (req, res) => {
 //   try {
@@ -644,20 +649,16 @@ app.post("/employees/:employeeId/status", async (req, res) => {
 //     res.status(500).json({ message: "Internal server error" });
 //   }
 // });
-// app.get("/employees/:employeeId/attendance-list/leaves", async (req, res) => {
-//   try {
-//     const { employeeId } = req.params;
-//     const leaves = await Leaves.find({ employeeId });
-//     res.status(200).json(leaves);
-//   } catch (error) {
-//     console.error("Error fetching complaints:", error);
-//     res.status(500).json({ error: "Error fetching complaints" });
-//   }
-// });
-
-
-
-
+app.get("/employees/:employeeId/attendance-list/leaves", async (req, res) => {
+  try {
+    const { employeeId } = req.params;
+    const leaves = await Leaves.find({ employeeId });
+    res.status(200).json(leaves);
+  } catch (error) {
+    console.error("Error fetching complaints:", error);
+    res.status(500).json({ error: "Error fetching complaints" });
+  }
+});
 
 const Port = 3005;
 app.listen(Port, () => {

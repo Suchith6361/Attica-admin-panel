@@ -6,8 +6,10 @@ import { BASE_URL } from './constants';
 
 const Employee = () => {
   const [employees, setEmployees] = useState([]);
+  const [filteredEmployees, setFilteredEmployees] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const navigate = useNavigate();
 
   const fetchEmployees = async () => {
@@ -16,6 +18,7 @@ const Employee = () => {
     try {
       const response = await axios.get(`${BASE_URL}/employees`);
       setEmployees(response.data);
+      setFilteredEmployees(response.data);
     } catch (err) {
       setError("Error fetching employees. Please try again later.");
       console.error("Error fetching employees:", err);
@@ -30,6 +33,19 @@ const Employee = () => {
 
   const retryFetch = () => {
     fetchEmployees();
+  };
+
+  const handleSearch = (event) => {
+    const query = event.target.value.toLowerCase();
+    setSearchQuery(query);
+    setFilteredEmployees(
+      employees.filter(
+        (employee) =>
+          employee.employeeId.toLowerCase().includes(query) ||
+          employee.name.toLowerCase().includes(query) ||
+          employee.mobileNumber.includes(query)
+      )
+    );
   };
 
   const goToCallDetails = (employeeId) => {
@@ -75,6 +91,16 @@ const Employee = () => {
     <div className="p-4 w-full max-w-5xl mx-auto mt-8">
       <h2 className="text-3xl font-bold mb-6 text-center">Employee List</h2>
 
+      <div className="mb-6 text-center">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={handleSearch}
+          placeholder="Search by Employee ID, Name, or Mobile Number"
+          className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+      </div>
+
       {loading ? (
         <div className="text-center">
           <p className="text-gray-500">Loading employees...</p>
@@ -84,7 +110,7 @@ const Employee = () => {
           <p>{error}</p>
           <button onClick={retryFetch} className="mt-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700">Retry</button>
         </div>
-      ) : employees.length > 0 ? (
+      ) : filteredEmployees.length > 0 ? (
         <div className="overflow-x-auto">
           <table className="w-full bg-white border border-gray-300 rounded-lg shadow-md">
             <thead className="bg-gray-100">
@@ -98,7 +124,7 @@ const Employee = () => {
               </tr>
             </thead>
             <tbody>
-              {employees.map((employee, index) => (
+              {filteredEmployees.map((employee, index) => (
                 <EmployeeRow key={employee._id} employee={employee} index={index} />
               ))}
             </tbody>
@@ -106,7 +132,7 @@ const Employee = () => {
         </div>
       ) : (
         <div className="text-center">
-          <p className="text-gray-500">No employees available.</p>
+          <p className="text-gray-500">No employees match your search.</p>
         </div>
       )}
     </div>

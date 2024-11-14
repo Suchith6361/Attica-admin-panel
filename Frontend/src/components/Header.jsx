@@ -29,11 +29,11 @@ const Header = () => {
   }, []);
 
   return (
-    <header className="fixed top-0 right-0 left-0 bg-gradient-to-br from-black to-blue-500 shadow-md p-4 flex items-center justify-between z-50">
+    <header className="fixed top-0 right-0 left-0 bg-gradient-to-br from-black to-red-500 shadow-md p-4 flex items-center justify-between z-50">
       {/* Branding/Logo - Attica Tracker */}
       <Link
         to="/"
-        className="text-xl sm:text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-500 to-purple-600 hover:scale-105 transition-transform duration-500 xs:pl-20"
+        className="text-xl sm:text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-purple-500 hover:scale-105 transition-transform duration-500 xs:pl-20"
       >
         ATTICA TRACKER
       </Link>

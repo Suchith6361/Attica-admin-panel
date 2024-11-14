@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from './constants';
 
 const UserRequest = () => {
   const [employees, setEmployees] = useState(() => {
-    // Load employees from local storage initially
     const savedEmployees = localStorage.getItem('employees');
     return savedEmployees ? JSON.parse(savedEmployees) : [];
   });
@@ -14,30 +13,38 @@ const UserRequest = () => {
   const [searchTerm, setSearchTerm] = useState('');
   const navigate = useNavigate();
 
-  const fetchEmployees = async () => {
+  const STATUS = {
+    APPROVED: 'Approved',
+    REJECTED: 'Rejected',
+    PENDING: 'Pending',
+  };
+
+  // Fetch employees data
+  const fetchEmployees = useCallback(async () => {
     setLoading(true);
     setError(null);
     try {
       const response = await axios.get(`${BASE_URL}/employees`);
       const fetchedEmployees = response.data;
       setEmployees(fetchedEmployees);
-      // Save fetched employees to local storage
       localStorage.setItem('employees', JSON.stringify(fetchedEmployees));
     } catch (err) {
-      setError("Error fetching employees. Please try again later.");
+      const savedEmployees = JSON.parse(localStorage.getItem('employees') || '[]');
+      if (savedEmployees.length > 0) {
+        setEmployees(savedEmployees);
+        setError("Failed to fetch fresh data. Showing cached employees.");
+      } else {
+        setError("Error fetching employees. Please try again later.");
+      }
       console.error("Error fetching employees:", err);
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
-    if (!employees.length) {
-      fetchEmployees();
-    } else {
-      setLoading(false);
-    }
-  }, []);
+    fetchEmployees();
+  }, [fetchEmployees]);
 
   const retryFetch = () => {
     fetchEmployees();
@@ -51,6 +58,7 @@ const UserRequest = () => {
     setSearchTerm(e.target.value);
   };
 
+  // Filter employees based on search term
   const filteredEmployees = employees.filter(
     (employee) =>
       employee.name?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -58,17 +66,17 @@ const UserRequest = () => {
       employee.mobileNumber?.includes(searchTerm)
   );
 
+  // Handle status change for employees
   const handleStatusChange = async (employeeId, status) => {
     try {
       const response = await axios.post(`${BASE_URL}/employees/${employeeId}/status`, { status });
       const updatedEmployee = response.data;
-      
+
       const updatedEmployees = employees.map(emp =>
         emp.employeeId === updatedEmployee.employeeId ? { ...emp, ApproveStatus: updatedEmployee.ApproveStatus } : emp
       );
-      
+
       setEmployees(updatedEmployees);
-      // Update local storage with the new data
       localStorage.setItem('employees', JSON.stringify(updatedEmployees));
     } catch (err) {
       console.error(`Error changing status for employee ${employeeId}:`, err);
@@ -76,7 +84,8 @@ const UserRequest = () => {
     }
   };
 
-  const EmployeeRow = ({ employee, index }) => (
+  // Employee Row component
+  const EmployeeRow = React.memo(({ employee, index }) => (
     <tr key={employee._id} className="hover:bg-gray-100 transition-colors duration-200">
       <td className="border border-gray-300 px-4 py-2 text-center">{index + 1}</td>
       <td className="border border-gray-300 px-4 py-2">{employee.employeeId}</td>
@@ -86,19 +95,25 @@ const UserRequest = () => {
         <button onClick={() => goToDetails(employee.employeeId)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2">View</button>
       </td>
       <td className="border border-gray-300 px-4 py-2 gap-3 flex items-center justify-center">
-        {employee.ApproveStatus === 'Approved' ? (
-          <span className='text-green-500 font-bold'>Approved</span>
-        ) : employee.ApproveStatus === 'Rejected' ? (
-          <span className='text-red-500 font-bold'>Rejected</span>
+        {employee.ApproveStatus === STATUS.APPROVED ? (
+          <>
+            <span className='text-green-500 font-bold'>Approved</span>
+            <button onClick={() => handleStatusChange(employee.employeeId, STATUS.PENDING)} className='bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded ml-2'>Edit</button>
+          </>
+        ) : employee.ApproveStatus === STATUS.REJECTED ? (
+          <>
+            <span className='text-red-500 font-bold'>Rejected</span>
+            <button onClick={() => handleStatusChange(employee.employeeId, STATUS.PENDING)} className='bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded ml-2'>Edit</button>
+          </>
         ) : (
           <>
-            <button onClick={() => handleStatusChange(employee.employeeId, 'Approved')} className='bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-2'>Approve</button>
-            <button onClick={() => handleStatusChange(employee.employeeId, 'Rejected')} className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-2'>Reject</button>
+            <button onClick={() => handleStatusChange(employee.employeeId, STATUS.APPROVED)} className='bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-2'>Approve</button>
+            <button onClick={() => handleStatusChange(employee.employeeId, STATUS.REJECTED)} className='bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded mr-2'>Reject</button>
           </>
         )}
       </td>
     </tr>
-  );
+  ));
 
   return (
     <div className="p-4 w-full max-w-5xl mx-auto mt-8 absolute left-[300px]">

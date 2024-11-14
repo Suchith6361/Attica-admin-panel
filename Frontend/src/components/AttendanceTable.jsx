@@ -112,7 +112,7 @@ const AttendanceTable = () => {
                     <td className="border border-gray-300 px-4 py-2 text-gray-800">{status}</td>
                     <td className="border border-gray-300 px-4 py-2">
                       {/* Uncomment this line to show the photo */}
-                      {/* <img src={photoUri} alt="Attendance" className="w-16 h-16 object-cover rounded" /> */}
+                     <img src={photoUri} alt="Attendance" className="w-16 h-16 object-cover rounded" /> 
                     </td>
                   </tr>
                 ))}
