@@ -193,22 +193,29 @@ const CallLogDetails = () => {
           </thead>
           <tbody>
             {filteredCallLogs.map((log, index) => (
-              <tr key={log._id} className="hover:bg-gray-100 transition-colors duration-200">
-                <td className="border border-gray-300 px-4 py-4">{index + 1}</td>
-                <td className="border border-gray-300 px-4 py-4">{log.name}</td>
-                <td className="border border-gray-300 px-4 py-4">{log.phoneNumber}</td>
-                <td className="border border-gray-300 px-4 py-4">{log.type}</td>
-                <td className="border border-gray-300 px-4 py-4">{log.duration}</td>
-                <td className="border border-gray-300 px-4 py-4">{new Date(log.dateTime).toLocaleDateString()}</td>
-                <td className="border border-gray-300 px-4 py-4">
-                  <button
-                    onClick={() => handleDelete(log._id)}
-                    className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
+         <tr key={log._id} className="hover:bg-gray-100 transition-colors duration-200">
+         <td className="border border-gray-300 px-4 py-4">{index + 1}</td>
+         <td className="border border-gray-300 px-4 py-4">{log.name}</td>
+         <td className="border border-gray-300 px-4 py-4">{log.phoneNumber}</td>
+         <td className="border border-gray-300 px-4 py-4">{log.type}</td>
+         <td className="border border-gray-300 px-4 py-4">
+           {log.duration &&
+             `${Math.floor(log.duration / 60)} mins ${log.duration % 60} secs`}
+         </td>
+         <td className="border border-gray-300 px-4 py-4">
+           {log.dateTime && new Date(log.dateTime).toLocaleString()}
+         </td>
+         <td className="border border-gray-300 px-4 py-4">
+           <button
+             onClick={() => handleDelete(log._id)}
+             className="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600"
+           >
+             Delete
+           </button>
+         </td>
+       </tr>
+       
+           
             ))}
           </tbody>
         </table>

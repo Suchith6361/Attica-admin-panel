@@ -3,7 +3,7 @@ import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import { BASE_URL } from './constants'; // Make sure the BASE_URL is correctly set
+import { BASE_URL } from './constants'; // Ensure BASE_URL is set correctly
 
 const AttendanceDetails = () => {
   const [employee, setEmployee] = useState(null);
@@ -18,7 +18,7 @@ const AttendanceDetails = () => {
     if (attendanceStatus.isPresent) return "Present";
     if (attendanceStatus.isHalfDay) return "Half Day";
     if (attendanceStatus.isLeave) return "Leave";
-    return "Absent"; 
+    return "Absent";
   };
 
   // Fetch attendance records based on the entered employee ID
@@ -40,7 +40,6 @@ const AttendanceDetails = () => {
       setLoading(false);
     }
   };
-  
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -49,14 +48,15 @@ const AttendanceDetails = () => {
     }
   };
 
-  // Filter only records with attendance and status
+  // Filter attendance records and include location details
   const filteredAttendance = attendance
-    .filter((record) => record.AttendanceStatus && record.time && record.photoUri)
+    .filter((record) => record.AttendanceStatus && record.time && record.photoUri && record.location)
     .map((record) => ({
       date: new Date(record.time).toDateString(),
       status: getStatus(record.AttendanceStatus),
-      time: new Date(record.time).toLocaleTimeString(), // Get the time in a readable format
+      time: new Date(record.time).toLocaleTimeString(), // Format time
       photoUri: record.photoUri,
+      location: record.locationName || "N/A", // Default to "N/A" if locationName is missing
     }));
 
   return (
@@ -127,15 +127,17 @@ const AttendanceDetails = () => {
                   <th className="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-gray-600">Date</th>
                   <th className="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-gray-600">Time</th>
                   <th className="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-gray-600">Status</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-gray-600">Location</th>
                   <th className="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-gray-600">Photo</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredAttendance.map(({ date, status, time, photoUri }) => (
+                {filteredAttendance.map(({ date, status, time, location, photoUri }) => (
                   <tr key={date} className="hover:bg-gray-100 transition-colors duration-200">
                     <td className="border border-gray-300 px-4 py-2 text-gray-800">{date}</td>
                     <td className="border border-gray-300 px-4 py-2 text-gray-800">{time}</td>
                     <td className="border border-gray-300 px-4 py-2 text-gray-800">{status}</td>
+                    <td className="border border-gray-300 px-4 py-2 text-gray-800">{location}</td>
                     <td className="border border-gray-300 px-4 py-2">
                       {/* Uncomment to display the photo */}
                       {/* <img src={photoUri} alt="attendance photo" className="h-12 w-12 object-cover rounded-full" /> */}

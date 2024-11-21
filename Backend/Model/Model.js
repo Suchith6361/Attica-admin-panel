@@ -215,6 +215,11 @@ const userDetailsSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
+  
+locationName:{
+    type: String,
+    required: true, // Ensure location name is provided if necessary
+},
   ApproveStatus: {
     type: String,
     enum: ["Approved", "Rejected", "Pending"], // Use strings to define approval status

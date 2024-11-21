@@ -512,17 +512,22 @@ app.delete("/Delete-all-messages/:employeeId", async (req, res) => {
 app.get("/employees/:employeeId/salaries", async (req, res) => {
   try {
     const { employeeId } = req.params; // Extract employeeId from request parameters
-    const salary = await Salary.findOne({ employeeId }); // Find salary record for the specific employee
+
+    // Find salary record for the specific employee
+    const salary = await Salary.findOne({ employeeId });
+
     if (!salary) {
       return res.status(404).json({ error: "Salary details not found" });
     }
-    console.log(salary); // Log the fetched salary
-    res.status(200).json(salary);
+
+    console.log("Fetched salary details:", salary); // Log the fetched salary for debugging
+    res.status(200).json(salary); // Send the salary details as a response
   } catch (error) {
-    console.error("Error fetching salary:", error);
-    res.status(500).json({ error: "Error fetching salary" });
+    console.error("Error fetching salary:", error); // Log any error that occurs
+    res.status(500).json({ error: "An internal error occurred while fetching salary details" });
   }
 });
+
 
 // To get the all details form of the employee
 app.get("/employees/:employeeId/details", async (req, res) => {

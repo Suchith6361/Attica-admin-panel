@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useParams } from "react-router-dom";
-import { BASE_URL } from './constants';
+import { BASE_URL } from "./constants";
 
 const CallLogTable = () => {
-  const { employeeId } = useParams(); // Get employeeId from URL parameters
-  const [callLogs, setCallLogs] = useState([]); // State to store call logs
-  const [filteredCallLogs, setFilteredCallLogs] = useState([]); // State for filtered call logs
-  const [searchTerm, setSearchTerm] = useState(""); // State for search term
-  const [sortOrder, setSortOrder] = useState(""); // State for sorting order
-  const [filterType, setFilterType] = useState("All"); // State for filtering by type
-  const [loading, setLoading] = useState(true); // State for loading
-  const [error, setError] = useState(null); // State for error
+  const { employeeId } = useParams();
+  const [callLogs, setCallLogs] = useState([]);
+  const [filteredCallLogs, setFilteredCallLogs] = useState([]);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [sortOrder, setSortOrder] = useState("");
+  const [filterType, setFilterType] = useState("All");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Fetch call logs when the component is mounted or employeeId changes
+  // Fetch call logs
   useEffect(() => {
     const fetchCallLogs = async () => {
       setLoading(true);
@@ -21,100 +21,95 @@ const CallLogTable = () => {
         const response = await axios.get(
           `${BASE_URL}/employees/${employeeId}/call-logs`
         );
-        setCallLogs(response.data); // Set call logs in the state
-        setFilteredCallLogs(response.data); // Set filtered logs initially
-      } catch (error) {
+        setCallLogs(response.data);
+        setFilteredCallLogs(response.data);
+      } catch (err) {
         setError("Error fetching call logs. Please try again.");
-        console.error("Error fetching call logs:", error);
+        console.error(err);
       } finally {
         setLoading(false);
       }
     };
 
-    if (employeeId) {
-      fetchCallLogs();
-    }
+    if (employeeId) fetchCallLogs();
   }, [employeeId]);
 
-  // Handle search input changes
+  // Handle Search
   const handleSearchChange = (event) => {
     setSearchTerm(event.target.value);
   };
 
-  // Handle sorting by duration
+  // Handle Sorting
   const handleSort = (order) => {
     setSortOrder(order);
-    const sortedLogs = [...filteredCallLogs].sort((a, b) => {
-      if (order === "ascending") {
-        return a.duration - b.duration;
-      } else if (order === "descending") {
-        return b.duration - a.duration;
-      }
-      return 0;
-    });
+    const sortedLogs = [...filteredCallLogs].sort((a, b) =>
+      order === "ascending" ? a.duration - b.duration : b.duration - a.duration
+    );
     setFilteredCallLogs(sortedLogs);
   };
 
-  // Handle deleting a single call log
+  // Handle Call Log Deletion
   const handleDeleteCallLog = async (callLogId) => {
     if (window.confirm("Do you really want to delete this call log?")) {
       try {
         await axios.delete(
           `${BASE_URL}/Delete-call-log/${employeeId}/${callLogId}`
         );
-        setCallLogs((prevLogs) =>
-          prevLogs.filter((log) => log._id !== callLogId)
-        );
-        setFilteredCallLogs((prevFiltered) =>
-          prevFiltered.filter((log) => log._id !== callLogId)
-        );
-      } catch (error) {
-        console.error("Error deleting call log:", error);
+        const updatedLogs = callLogs.filter((log) => log._id !== callLogId);
+        setCallLogs(updatedLogs);
+        setFilteredCallLogs(updatedLogs);
+      } catch (err) {
+        console.error(err);
       }
     }
   };
 
-  // Handle deleting all call logs
+  // Handle Deleting All Call Logs
   const handleDeleteAllCallLogs = async () => {
-    if (
-      window.confirm(
-        "Do you really want to delete all call logs? This action cannot be undone."
-      )
-    ) {
+    if (window.confirm("Do you really want to delete all call logs?")) {
       try {
-        await axios.delete(
-          `${BASE_URL}/Delete-all-call-logs/${employeeId}`
-        );
-        setCallLogs([]); // Clear call logs state
-        setFilteredCallLogs([]); // Clear filtered logs
+        await axios.delete(`${BASE_URL}/Delete-all-call-logs/${employeeId}`);
+        setCallLogs([]);
+        setFilteredCallLogs([]);
         alert("All call logs deleted successfully.");
-      } catch (error) {
-        console.error("Error deleting all call logs:", error);
-        alert("Error deleting all call logs. Please try again.");
+      } catch (err) {
+        console.error(err);
+        alert("Error deleting call logs. Please try again.");
       }
     }
   };
 
-  // Search and filter logic
+  // Filter Logs Based on Search Term and Type
   useEffect(() => {
     const filtered = callLogs.filter((log) => {
-      const name = log.name || "";
-      const phoneNumber = log.phoneNumber || "";
-      const type = log.type || "";
-      const duration = log.duration;
-      const date = new Date(log.dateTime).toLocaleDateString();
+      const searchLower = searchTerm.toLowerCase();
+      const matchesSearch =
+        log.name?.toLowerCase().includes(searchLower) ||
+        log.phoneNumber.includes(searchLower) ||
+        log.type?.toLowerCase().includes(searchLower) ||
+        log.duration.toString().includes(searchTerm) ||
+        new Date(log.dateTime).toLocaleDateString().includes(searchTerm);
 
-      return (
-        (name.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          phoneNumber.includes(searchTerm) ||
-          duration.toString().includes(searchTerm) ||
-          type.toLowerCase().includes(searchTerm.toLowerCase()) ||
-          date.includes(searchTerm)) &&
-        (filterType === "All" || log.type === filterType)
-      );
+      return matchesSearch && (filterType === "All" || log.type === filterType);
     });
+
     setFilteredCallLogs(filtered);
-  }, [searchTerm, callLogs, filterType]);
+  }, [searchTerm, filterType, callLogs]);
+
+  // Format DateTime
+  const formatDateTime = (dateTime) => {
+    return new Date(dateTime).toLocaleString("en-US", {
+      timeZone: "Asia/Kolkata",
+      weekday: "short",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true,
+    });
+  };
 
   return (
     <div className="p-6 absolute top-20 right-10 xs:right-0 md:left-[270px] xs:left-0">
@@ -140,7 +135,7 @@ const CallLogTable = () => {
           <option value="descending">Descending</option>
         </select>
         <button
-          onClick={handleDeleteAllCallLogs} // Handle Delete All logic
+          onClick={handleDeleteAllCallLogs}
           className="bg-gradient-to-r from-red-500 to-purple-700 hover:shadow-lg text-white px-6 py-2 rounded-lg"
         >
           Delete All Call Logs
@@ -174,10 +169,8 @@ const CallLogTable = () => {
                   <td className="p-4">{index + 1}</td>
                   <td className="p-4">{log.name || "N/A"}</td>
                   <td className="p-4">{log.type}</td>
-                  <td className="p-4">{(log.duration / 60).toFixed(2)} </td>
-                  <td className="p-4">
-                    {new Date(log.dateTime).toLocaleString()}
-                  </td>
+                  <td className="p-4">{(log.duration / 60).toFixed(2)}</td>
+                  <td className="p-4">{formatDateTime(log.dateTime)}</td>
                   <td className="p-4">{log.phoneNumber}</td>
                   <td className="p-4 text-center">
                     <button

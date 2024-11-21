@@ -43,12 +43,13 @@ const AttendanceTable = () => {
 
   // Filter only records with attendance and status
   const filteredAttendance = attendance
-    .filter((record) => record.AttendanceStatus && record.time && record.photoUri)
+    .filter((record) => record.AttendanceStatus && record.time && record.photoUri && record.locationName)
     .map((record) => ({
       date: new Date(record.time).toDateString(),
       status: getStatus(record.AttendanceStatus),
       time: new Date(record.time).toLocaleTimeString(), // Get the time in a readable format
       photoUri: record.photoUri,
+      location: record.locationName,
     }));
 
   return (
@@ -60,7 +61,7 @@ const AttendanceTable = () => {
           <h3 className="text-2xl font-semibold">Employee Details</h3>
           <p><strong>ID:</strong> {employee.employeeId}</p>
           <p><strong>Name:</strong> {employee.name}</p>
-          <p><strong>userName:</strong> {employee.userName}</p>
+          <p><strong>Username:</strong> {employee.userName}</p>
           <p><strong>Mobile Number:</strong> {employee.mobileNumber}</p>
           <p><strong>Branch:</strong> {employee.branch}</p>
           <p><strong>Designation:</strong> {employee.designation}</p>
@@ -101,18 +102,19 @@ const AttendanceTable = () => {
                   <th className="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-gray-600">Date</th>
                   <th className="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-gray-600">Time</th>
                   <th className="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-gray-600">Status</th>
+                  <th className="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-gray-600">Location</th>
                   <th className="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-gray-600">Photo</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredAttendance.map(({ date, status, time, photoUri }) => (
+                {filteredAttendance.map(({ date, status, time, photoUri, location }) => (
                   <tr key={date} className="hover:bg-gray-100 transition-colors duration-200">
                     <td className="border border-gray-300 px-4 py-2 text-gray-800">{date}</td>
                     <td className="border border-gray-300 px-4 py-2 text-gray-800">{time}</td>
                     <td className="border border-gray-300 px-4 py-2 text-gray-800">{status}</td>
+                    <td className="border border-gray-300 px-4 py-2 text-gray-800">{location}</td>
                     <td className="border border-gray-300 px-4 py-2">
-                      {/* Uncomment this line to show the photo */}
-                     <img src={photoUri} alt="Attendance" className="w-16 h-16 object-cover rounded" /> 
+                      <img src={photoUri} alt="Attendance" className="w-16 h-16 object-cover rounded" />
                     </td>
                   </tr>
                 ))}
