@@ -115,6 +115,23 @@ const CallLogDetails = () => {
     setFilteredCallLogs(filtered);
   }, [searchTerm, callLogs]);
 
+  const formatDateTime = (dateTime) => {
+    const date = new Date(dateTime);
+  
+    const options = {
+      timeZone: "Asia/Kolkata",
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: true, // Converts to 12-hour format with AM/PM
+    };
+  
+    return date.toLocaleString("en-IN", options);
+  };
+
   return (
     <div className="p-4 absolute top-20 right-0 md:left-[275px] xs:left-0">
       <h1 className="text-4xl font-bold mb-6">Call Logs for Employee ID: {employeeId}</h1>
@@ -203,8 +220,9 @@ const CallLogDetails = () => {
              `${Math.floor(log.duration / 60)} mins ${log.duration % 60} secs`}
          </td>
          <td className="border border-gray-300 px-4 py-4">
-           {log.dateTime && new Date(log.dateTime).toLocaleString()}
-         </td>
+  {log.dateTime.replace("T", " ").split(".")[0]}
+</td>
+
          <td className="border border-gray-300 px-4 py-4">
            <button
              onClick={() => handleDelete(log._id)}

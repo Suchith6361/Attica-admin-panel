@@ -96,9 +96,9 @@ const CallLogTable = () => {
     setFilteredCallLogs(filtered);
   }, [searchTerm, filterType, callLogs]);
 
-  // Format DateTime
+  // Format DateTime in Indian Standard Time (IST)
   const formatDateTime = (dateTime) => {
-    return new Date(dateTime).toLocaleString("en-US", {
+    return new Date(dateTime).toLocaleString("en-IN", {
       timeZone: "Asia/Kolkata",
       weekday: "short",
       year: "numeric",
@@ -109,6 +109,13 @@ const CallLogTable = () => {
       second: "2-digit",
       hour12: true,
     });
+  };
+
+  // Format Duration in minutes:seconds format
+  const formatDuration = (duration) => {
+    const minutes = Math.floor(duration / 60);
+    const seconds = duration % 60;
+    return `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
   };
 
   return (
@@ -154,7 +161,7 @@ const CallLogTable = () => {
                 <th className="p-4">Sl. No.</th>
                 <th className="p-4">Name</th>
                 <th className="p-4">Type</th>
-                <th className="p-4">Duration (minutes)</th>
+                <th className="p-4">Duration</th>
                 <th className="p-4">Date & Time</th>
                 <th className="p-4">Phone Number</th>
                 <th className="p-4 text-center">Actions</th>
@@ -169,8 +176,12 @@ const CallLogTable = () => {
                   <td className="p-4">{index + 1}</td>
                   <td className="p-4">{log.name || "N/A"}</td>
                   <td className="p-4">{log.type}</td>
-                  <td className="p-4">{(log.duration / 60).toFixed(2)}</td>
-                  <td className="p-4">{formatDateTime(log.dateTime)}</td>
+                  <td className="p-4">{formatDuration(log.duration)}</td>
+                  {/* <td className="p-4">{formatDateTime(log.dateTime)}</td> */}
+                  <td className="p-4">
+  {log.dateTime.replace("T", " ").split(".")[0]}
+</td>
+
                   <td className="p-4">{log.phoneNumber}</td>
                   <td className="p-4 text-center">
                     <button
