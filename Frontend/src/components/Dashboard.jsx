@@ -101,7 +101,7 @@ const Dashboard = () => {
       {error && <p className="text-red-500 text-center mb-4 ">{error}</p>}
 
       <div className="bg-gray-300 shadow-lg hover:shadow-xl transition-shadow shadow-violet-700 rounded-lg p-4 xs:p-5 sm:p-6 mb-6 flex flex-col">
-        <h2 className="text-2xl xs:text-2xl sm:text-3xl font-bold mb-2 ">Employee Info</h2>
+        <h2 className="text-2xl xs:text-2xl sm:text-3xl font-bold mb-2 ">Employee Details</h2>
         <p className="text-gray-700 text-lg xs:text-xl">Name: {employee.name || "N/A"}</p>
         <p className="text-gray-700 text-lg xs:text-xl">
           Employee ID: {employee.employeeId || inputEmployeeId}
