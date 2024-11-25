@@ -71,6 +71,10 @@ locationName: {
     default: Date.now,
     required: true,
   },
+  photoUri:{
+    type: String,
+    required: true,
+  }
 });
 
 

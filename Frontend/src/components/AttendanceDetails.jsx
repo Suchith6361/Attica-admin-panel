@@ -198,12 +198,13 @@ const AttendanceDetails = () => {
                       {location}
                     </td>
                     <td className="border border-gray-300 px-4 py-2">
-                      <img
-                        src={photoUri}
-                        alt="attendance photo"
-                        className="h-12 w-12 object-cover rounded-full"
-                      />
-                    </td>
+  <img
+    src={photoUri}
+    alt="Attendance"
+    className="w-32 h-32 object-cover rounded-lg mx-auto" // Increase the width and height
+  />
+</td>
+
                   </tr>
                 ))}
               </tbody>

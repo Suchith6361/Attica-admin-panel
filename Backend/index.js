@@ -175,39 +175,48 @@ app.get("/employees/:employeeId/total-messages", async (req, res) => {
 
 app.get("/employees/:employeeId/attendance-list", async (req, res) => {
   try {
+    // Fetch employee details
     const employee = await userDetails.findOne({
       employeeId: req.params.employeeId,
     });
+
     if (!employee) {
       return res.status(404).json({ error: "Employee not found" });
     }
 
-    // Optional filter by date (if passed as a query parameter, e.g., `?date=YYYY-MM-DD`)
+    // Prepare attendance query
     const { date } = req.query;
     let attendanceQuery = { employeeId: req.params.employeeId };
 
     if (date) {
       const startDate = new Date(date);
       const endDate = new Date(startDate);
-      endDate.setDate(endDate.getDate() + 1); // Set end of the date
+      endDate.setDate(endDate.getDate() + 1); // End of the selected date
 
-      // Assuming `location.time` is the field containing the date information
       attendanceQuery["location.time"] = { $gte: startDate, $lt: endDate };
     }
 
+    // Fetch attendance records
     const attendance = await AttendanceList.find(attendanceQuery);
+
+    if (!attendance.length) {
+      return res
+        .status(404)
+        .json({ error: "No attendance records found for the employee" });
+    }
 
     console.log("Employee Data: ", employee);
     console.log("Filtered Attendance Records: ", attendance); // Debugging line
 
+    // Send response
     res.status(200).json({
       employeeId: employee.employeeId,
       userName: employee.userName,
       name: employee.name,
       mobileNumber: employee.mobileNumber,
-      attendance,
       branch: employee.branch,
       designation: employee.designation,
+      attendance, // Includes `photoUri` if present in the schema
     });
   } catch (error) {
     console.error("Error fetching employee data:", error);

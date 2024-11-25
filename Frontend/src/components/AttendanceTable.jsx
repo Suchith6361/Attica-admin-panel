@@ -103,7 +103,7 @@ const AttendanceTable = () => {
                   <th className="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-gray-600">Time</th>
                   <th className="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-gray-600">Status</th>
                   <th className="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-gray-600">Location</th>
-                  <th className="border border-gray-300 px-4 py-2 text-left text-sm font-medium text-gray-600">Photo</th>
+                  <th className="border border-gray-300 px-10 py-2 text-left text-sm font-medium text-gray-600">Photo</th>
                 </tr>
               </thead>
               <tbody>
@@ -114,8 +114,13 @@ const AttendanceTable = () => {
                     <td className="border border-gray-300 px-4 py-2 text-gray-800">{status}</td>
                     <td className="border border-gray-300 px-4 py-2 text-gray-800">{location}</td>
                     <td className="border border-gray-300 px-4 py-2">
-                      <img src={photoUri} alt="Attendance" className="w-16 h-16 object-cover rounded" />
-                    </td>
+  <img
+    src={photoUri}
+    alt="Attendance"
+    className="w-32 h-32 object-cover rounded-lg mx-auto" // Increase the width and height
+  />
+</td>
+
                   </tr>
                 ))}
               </tbody>
