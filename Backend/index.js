@@ -518,6 +518,40 @@ app.delete("/Delete-all-messages/:employeeId", async (req, res) => {
   }
 });
 
+// app.get("/employees/:employeeId/salaries", async (req, res) => {
+//   try {
+//     const { employeeId } = req.params; // Extract employeeId from request parameters
+
+//     // Find salary record for the specific employee
+//     const salary = await Salary.findOne({ employeeId });
+
+//     if (!salary) {
+//       return res.status(404).json({ error: "Salary details not found" });
+//     }
+
+//     // Log the fetched salary for debugging
+//     console.log("Fetched salary details:", salary);
+
+//     // Extract individual salary details
+//     const { basicSalary, advanceSalary, noOfLeaves, actualSalary,deductedSalary,perDaySalary } = salary;
+
+//     // Return only the required salary details
+//     res.status(200).json({
+//       employeeId,
+//       basicSalary,
+//       advanceSalary,
+//       noOfLeaves,
+//       actualSalary,
+//       deductedSalary,
+// perDaySalary,
+
+//     });
+//   } catch (error) {
+//     console.error("Error fetching salary:", error); // Log any error that occurs
+//     res.status(500).json({ error: "An internal error occurred while fetching salary details" });
+//   }
+// });
+
 app.get("/employees/:employeeId/salaries", async (req, res) => {
   try {
     const { employeeId } = req.params; // Extract employeeId from request parameters
@@ -526,7 +560,7 @@ app.get("/employees/:employeeId/salaries", async (req, res) => {
     const salary = await Salary.findOne({ employeeId });
 
     if (!salary) {
-      return res.status(404).json({ error: "Salary details not found" });
+      return res.status(404).json({ error: "Salary details not found for this Employee ID" });
     }
 
     console.log("Fetched salary details:", salary); // Log the fetched salary for debugging

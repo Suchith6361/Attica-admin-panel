@@ -97,7 +97,7 @@ const AttendanceDetails = () => {
       </form>
 
       {employee && (
-        <div className="bg-blue-500 text-white p-4 rounded-lg mb-6">
+        <div className="bg-red-600 text-white p-4 rounded-lg mb-6">
           <h3 className="text-2xl font-semibold">Employee Details</h3>
           <p>
             <strong>ID:</strong> {employee.employeeId}
@@ -129,7 +129,7 @@ const AttendanceDetails = () => {
           onClick={() =>
             navigate(`/employees/${employeeId}/attendance-list/leaves`)
           }
-          className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-2 md:mb-0"
+          className="px-6 py-2 bg-blue-500 hover:bg-red-600 text-white rounded-lg shadow  transition duration-300 mb-2 md:mb-0"
         >
           View Leave Requests
         </button>
@@ -137,7 +137,7 @@ const AttendanceDetails = () => {
           onClick={() =>
             navigate(`/employees/${employeeId}/attendance-list/complaints`)
           }
-          className="px-6 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition duration-300"
+          className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-red-600 transition duration-300"
         >
           View Complaints
         </button>
@@ -179,34 +179,35 @@ const AttendanceDetails = () => {
                 </tr>
               </thead>
               <tbody>
-                {filteredAttendance.map(({ date, status, time, photoUri,location }) => (
-                  <tr
-                    key={date}
-                    className="hover:bg-gray-100 transition-colors duration-200"
-                  >
-                    <td className="border border-gray-300 px-4 py-2 text-gray-800">
-                      {date}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2 text-gray-800">
-                      {time}
-                    </td>
+                {filteredAttendance.map(
+                  ({ date, status, time, photoUri, location }) => (
+                    <tr
+                      key={date}
+                      className="hover:bg-gray-100 transition-colors duration-200"
+                    >
+                      <td className="border border-gray-300 px-4 py-2 text-gray-800">
+                        {date}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2 text-gray-800">
+                        {time}
+                      </td>
 
-                    <td className="border border-gray-300 px-4 py-2 text-gray-800">
-                      {status}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2 text-gray-800">
-                      {location}
-                    </td>
-                    <td className="border border-gray-300 px-4 py-2">
-  <img
-    src={photoUri}
-    alt="Attendance"
-    className="w-32 h-32 object-cover rounded-lg mx-auto" // Increase the width and height
-  />
-</td>
-
-                  </tr>
-                ))}
+                      <td className="border border-gray-300 px-4 py-2 text-gray-800">
+                        {status}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2 text-gray-800">
+                        {location}
+                      </td>
+                      <td className="border border-gray-300 px-4 py-2">
+                        <img
+                          src={photoUri}
+                          alt="Attendance"
+                          className="w-32 h-32 object-cover rounded-lg mx-auto" // Increase the width and height
+                        />
+                      </td>
+                    </tr>
+                  )
+                )}
               </tbody>
             </table>
           ) : (

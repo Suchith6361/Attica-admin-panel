@@ -122,15 +122,12 @@ const locationSchema = new mongoose.Schema({
 const salarySchema = new mongoose.Schema({
   employeeId: { type: String, required: true },
   basicSalary: { type: Number, required: true },
+  advanceSalary: { type: Number, required: true },
+  noOfLeaves: { type: Number, required: true },
   actualSalary: { type: Number, required: true },
-  advanceSalary:{ type: Number, required: true },
-  perDaySalary:{ type: Number, required: true },
-  deductedSalary:{ type: Number, required: true },
-  nuOfLeaves: { type: Number, required: true },
-  timestamp: { type: Date, default: Date.now },
 });
 
-const userSchema = new mongoose.Schema({
+const adminUserSchema = new mongoose.Schema({
   username: {
     type: String,
     required: true,
@@ -245,7 +242,7 @@ const employeeSchema = new mongoose.Schema({
 // const CallLog = mongoose.model("callLog", callLogSchema, "callLog");
 
 const Location = mongoose.model("Location", locationSchema, "locations");
-const User = mongoose.model("adminuser", userSchema, "adminuser");
+const AdminUser = mongoose.model("adminuser", adminUserSchema, "adminuser");
 const Employee = mongoose.model("employees", employeeSchema, "employees");
 const Complaint = mongoose.model("complaints", complaintSchema, "complaints");
 const Leaves = mongoose.model("leaves", leaveSchema, "leaves");
@@ -258,7 +255,7 @@ module.exports = {
   // CallLog,
   // Message,
   Location,
-  User,
+  AdminUser,
   Employee,
   Complaint,
   Leaves,

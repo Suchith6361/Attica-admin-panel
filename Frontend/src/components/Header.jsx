@@ -33,9 +33,9 @@ const Header = () => {
       {/* Branding/Logo - Attica Tracker */}
       <Link
         to="/"
-        className="text-xl sm:text-2xl md:text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-600 to-purple-500 hover:scale-105 transition-transform duration-500 xs:pl-20"
+        className="text-xl sm:text-2xl md:text-4xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-yellow-100 to-purple-600 hover:scale-105 transition-transform duration-500 xs:pl-20"
       >
-        ATTICA TRACKER
+        ATTICA EYE
       </Link>
 
       {auth ? (

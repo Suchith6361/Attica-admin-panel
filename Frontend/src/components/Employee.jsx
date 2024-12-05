@@ -62,16 +62,16 @@ const Employee = () => {
 
   const EmployeeRow = ({ employee, index }) => (
     <tr key={employee._id} className="hover:bg-gray-100 transition-colors duration-200">
-      <td className="border border-gray-300 px-4 py-2 text-center">{index + 1}</td>
-      <td className="border border-gray-300 px-4 py-2">{employee.employeeId}</td>
-      <td className="border border-gray-300 px-4 py-2">{employee.name}</td>
-      <td className="border border-gray-300 px-4 py-2">{employee.mobileNumber}</td>
-      <td className="border border-gray-300 px-4 py-2">
+      <td className="border border-gray-800 px-4 py-2 text-center">{index + 1}</td>
+      <td className="border border-gray-800 px-4 py-2">{employee.employeeId}</td>
+      <td className="border border-gray-800 px-4 py-2">{employee.name}</td>
+      <td className="border border-gray-800 px-4 py-2">{employee.mobileNumber}</td>
+      <td className="border border-gray-800 px-4 py-2">
         <button onClick={() => goToCallDetails(employee.employeeId)} className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mr-2" aria-label="View call logs">Calls</button>
         <button onClick={() => goToMessageDetails(employee.employeeId)} className="bg-green-500 hover:bg-green-700 text-white font-bold py-1 px-2 rounded mr-2" aria-label="View messages">Messages</button>
-        <button onClick={() => goToAttendanceDetails(employee.employeeId)} className="bg-yellow-500 hover:bg-yellow-700 text-white font-bold py-1 px-2 rounded" aria-label="View attendance list">Attendance</button>
+        <button onClick={() => goToAttendanceDetails(employee.employeeId)} className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-1 px-2 rounded" aria-label="View attendance list">Attendance</button>
       </td>
-      <td className="border border-gray-300 px-4 py-2 flex items-center justify-center">
+      <td className="border border-gray-400 px-4 py-12 flex items-center justify-center">
         {employee.isActive ? (
           <div className="flex items-center">
             <FaCircle className="text-green-500 mr-2" />
@@ -97,7 +97,7 @@ const Employee = () => {
           value={searchQuery}
           onChange={handleSearch}
           placeholder="Search by Employee ID, Name, or Mobile Number"
-          className="w-full max-w-md px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+          className="w-full max-w-md px-4 py-2 border border-red-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
         />
       </div>
 
@@ -112,15 +112,15 @@ const Employee = () => {
         </div>
       ) : filteredEmployees.length > 0 ? (
         <div className="overflow-x-auto">
-          <table className="w-full bg-white border border-gray-300 rounded-lg shadow-md">
-            <thead className="bg-gray-100">
+          <table className="w-full bg-white border border-gray-600 rounded-lg shadow-md">
+            <thead className="bg-gray-800">
               <tr>
-                <th className="border border-gray-300 px-4 py-3 text-left text-sm font-medium text-gray-600">SL No</th>
-                <th className="border border-gray-300 px-4 py-3 text-left text-sm font-medium text-gray-600">Employee ID</th>
-                <th className="border border-gray-300 px-4 py-3 text-left text-sm font-medium text-gray-600">Employee Name</th>
-                <th className="border border-gray-300 px-4 py-3 text-left text-sm font-medium text-gray-600">Mobile Number</th>
-                <th className="border border-gray-300 px-4 py-3 text-left text-sm font-medium text-gray-600">Actions</th>
-                <th className="border border-gray-300 px-4 py-3 text-left text-sm font-medium text-gray-600">Active Status</th>
+                <th className="border border-black px-4 py-3 text-left text-sm font-medium text-white bg-red-600">SL No</th>
+                <th className="border border-black px-4 py-3 text-left text-sm font-medium text-white bg-red-600">Employee ID</th>
+                <th className="border border-black px-4 py-3 text-left text-sm font-medium text-white bg-red-600">Employee Name</th>
+                <th className="border border-black px-4 py-3 text-left text-sm font-medium text-white bg-red-600">Mobile Number</th>
+                <th className="border border-black px-4 py-3 text-left text-sm font-medium text-white bg-red-600">Actions</th>
+                <th className="border border-black px-4 py-3 text-left text-sm font-medium text-white bg-red-600">Active Status</th>
               </tr>
             </thead>
             <tbody>

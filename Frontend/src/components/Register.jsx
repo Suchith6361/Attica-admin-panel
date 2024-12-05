@@ -69,34 +69,35 @@ const AuthPage = () => {
 
   return (
     <div className="flex justify-center items-center h-screen bg-gray-100">
-      <div className="w-[400px] p-8 bg-white rounded-lg shadow-lg">
+      <div className="w-[400px] p-8 bg-gradient-to-br from-black to-red-500 rounded-lg shadow-lg border border-red-700">
         {/* Conditionally render Login or Register form */}
         {isLogin ? (
           <>
             {/* Login Form */}
-            <h2 className="text-2xl font-semibold text-center mb-4">Login</h2>
+            <h2 className="text-2xl font-semibold text-center mb-4 text-white ">Login</h2>
             <input
               type="text"
+
               placeholder="Enter Username"
-              className="w-full p-2 mb-4 border rounded"
+              className="w-full p-2 mb-4 rounded border border-red-600"
               value={username}
               onChange={(e) => setUsername(e.target.value)}
             />
             <input
               type="password"
               placeholder="Enter Password"
-              className="w-full p-2 mb-4 border rounded"
+              className="w-full p-2 mb-4 border  border-red-600 rounded"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
             />
             {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
             <button
-              className="w-full hover:bg-blue-400 bg-blue-500 text-white py-2 rounded"
+              className="w-full hover:bg-red-400 bg-red-500 text-white py-2 rounded"
               onClick={handleLogin}
             >
               Login
             </button>
-            <p className="text-center mt-4">
+            <p className="text-center mt-4 text-white">
               Don't have an account?{" "}
               <button
                 className="text-blue-500 underline"
@@ -129,7 +130,7 @@ const AuthPage = () => {
             />
             {error && <p className="text-red-500 text-sm mb-2">{error}</p>}
             <button
-              className="w-full hover:bg-blue-400 bg-blue-500 text-white py-2 rounded"
+              className="w-full hover:bg-red-400 bg-red-500 text-white py-2 rounded"
               onClick={handleRegister}
             >
               Register

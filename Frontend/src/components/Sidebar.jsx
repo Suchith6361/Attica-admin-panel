@@ -35,7 +35,7 @@ const Sidebar = () => {
         {isOpen ? "Close" : "Menu"}
       </button>
 
-      <aside className={`fixed top-0 left-0 h-full w-64 bg-gray-800 text-white p-4 transform ${isOpen ? "translate-x-0" : "-translate-x-full"} transition-transform duration-300 md:translate-x-0 z-40`}>
+      <aside className={`fixed top-0 left-0 h-full w-64 bg-gray-900 text-white p-4 transform ${isOpen ? "translate-x-0" : "-translate-x-full"} transition-transform duration-300 md:translate-x-0 z-40`}>
         <nav className="space-y-4 mt-16">
           <Link to="/" className="flex text-[20px] items-center space-x-2 p-2 hover:bg-gray-700 rounded">
             <FaTachometerAlt className="text-yellow-400" />

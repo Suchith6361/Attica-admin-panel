@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import axios from "axios";
 import { FaPhone, FaEnvelope, FaMapMarkerAlt, FaCheckCircle } from "react-icons/fa";
 import { Link, useParams } from "react-router-dom";
 import { BASE_URL } from './constants';
@@ -15,7 +14,7 @@ const Dashboard = () => {
   const [advanceSalary, setAdvanceSalary] = useState("N/A");
   const [numberOfLeaves, setNumberOfLeaves] = useState("N/A");
   const [actualSalary, setActualSalary] = useState("N/A");
-  const [locations, setLocations] = useState([]);  // New state for storing location updates
+  const [locations, setLocations] = useState([]); // New state for storing location updates
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -25,34 +24,39 @@ const Dashboard = () => {
     setEmployee({});
     setTotalCalls(0);
     setTotalMessages(0);
-    setAttendanceStatus("N/A");
-    setBasicSalary("N/A");
-    setAdvanceSalary("N/A");
-    setNumberOfLeaves("N/A");
-    setActualSalary("N/A");
-    setLocations([]);  // Reset locations
+    setAttendanceStatus("");
+    setBasicSalary("");
+    setAdvanceSalary("");
+    setNumberOfLeaves("");
+    setActualSalary("");
+    setLocations([]); // Reset locations
 
     try {
-      const employeeResponse = await axios.get(`${BASE_URL}/employees/${id}`);
-      setEmployee(employeeResponse.data);
+      const employeeResponse = await fetch(`${BASE_URL}/employees/${id}`);
+      if (!employeeResponse.ok) throw new Error("Employee not found");
+      const employeeData = await employeeResponse.json();
+      setEmployee(employeeData);
 
-      const callResponse = await axios.get(`${BASE_URL}/employees/${id}/total-calls`);
-      setTotalCalls(callResponse.data.totalCalls || 0);
+      const callResponse = await fetch(`${BASE_URL}/employees/${id}/total-calls`);
+      const callData = callResponse.ok ? await callResponse.json() : { totalCalls: 0 };
+      setTotalCalls(callData.totalCalls || 0);
 
-      const messageResponse = await axios.get(`${BASE_URL}/employees/${id}/total-messages`);
-      setTotalMessages(messageResponse.data.totalMessages || 0);
+      const messageResponse = await fetch(`${BASE_URL}/employees/${id}/total-messages`);
+      const messageData = messageResponse.ok ? await messageResponse.json() : { totalMessages: 0 };
+      setTotalMessages(messageData.totalMessages || 0);
 
-      const attendanceResponse = await axios.get(`${BASE_URL}/employees/${id}/attendance-list`);
-      setAttendanceStatus(attendanceResponse.data.status || "N/A");
+      const attendanceResponse = await fetch(`${BASE_URL}/employees/${id}/attendance-list`);
+      const attendanceData = attendanceResponse.ok ? await attendanceResponse.json() : {};
+      setAttendanceStatus(attendanceData.status || "N/A");
 
-      const salaryResponse = await axios.get(`${BASE_URL}/employees/${id}/salaries`);
-      setBasicSalary(salaryResponse.data.basicSalary || "N/A");
-      setAdvanceSalary(salaryResponse.data.advanceSalary || "N/A");
-      setNumberOfLeaves(salaryResponse.data.noOfLeaves || "N/A");
-      setActualSalary(salaryResponse.data.actualSalary || "N/A");
-
-      // Fetch location updates from attendance response
-      setLocations(attendanceResponse.data.location || []);
+      const salaryResponse = await fetch(`${BASE_URL}/employees/${id}/salaries`);
+      if (salaryResponse.ok) {
+        const salaryData = await salaryResponse.json();
+        setBasicSalary(salaryData.basicSalary);
+        setAdvanceSalary(salaryData.advanceSalary);
+        setNumberOfLeaves(salaryData.noOfLeaves);
+        setActualSalary(salaryData.actualSalary);
+      }
     } catch (err) {
       setError("Error fetching employee data. Please check the Employee ID.");
       console.error("Error fetching employee data:", err);
@@ -73,7 +77,7 @@ const Dashboard = () => {
       fetchEmployeeData(inputEmployeeId);
     } else {
       setError("Please enter a valid Employee ID.");
-      setEmployee({ name: "", employeeId: "", mobileNumber: "", branch: "", });
+      setEmployee({ name: "", employeeId: "", mobileNumber: "", branch: "" });
     }
   };
 
@@ -98,31 +102,21 @@ const Dashboard = () => {
         </button>
       </form>
 
-      {error && <p className="text-red-500 text-center mb-4 ">{error}</p>}
+      {error && <p className="text-red-500 text-center mb-4">{error}</p>}
 
-      <div className="bg-gray-300 shadow-lg hover:shadow-xl transition-shadow shadow-violet-700 rounded-lg p-4 xs:p-5 sm:p-6 mb-6 flex flex-col">
-        <h2 className="text-2xl xs:text-2xl sm:text-3xl font-bold mb-2 ">Employee Details</h2>
+      <div className="bg-gray-300 shadow-xl hover:shadow-xl transition-shadow shadow-violet-800 rounded-lg p-4 xs:p-5 sm:p-6 mb-10 flex flex-col">
+        <h2 className="text-2xl xs:text-2xl sm:text-3xl font-bold mb-2">Employee Details</h2>
         <p className="text-gray-700 text-lg xs:text-xl">Name: {employee.name || "N/A"}</p>
-        <p className="text-gray-700 text-lg xs:text-xl">
-          Employee ID: {employee.employeeId || inputEmployeeId}
-        </p>
-        <p className="text-gray-700 text-lg xs:text-xl">
-          Phone Number: {employee.mobileNumber || "N/A"}
-        </p>
-        <p className="text-gray-700 text-lg xs:text-xl">
-          Basic Salary: {basicSalary || "N/A"}
-        </p>
-        <p className="text-gray-700 text-lg xs:text-xl">
-          Branch: {employee.branch || "N/A"}
-        </p>
-        <p className="text-gray-700 text-lg xs:text-xl">
-          Designation: {employee.designation || "N/A"}
-        </p>
+        <p className="text-gray-700 text-lg xs:text-xl">Employee ID: {employee.employeeId || inputEmployeeId}</p>
+        <p className="text-gray-700 text-lg xs:text-xl">Phone Number: {employee.mobileNumber || "N/A"}</p>
+        <p className="text-gray-700 text-lg xs:text-xl">Basic Salary: {basicSalary || "N/A"}</p>
+        <p className="text-gray-700 text-lg xs:text-xl">Branch: {employee.branch || "N/A"}</p>
+        <p className="text-gray-700 text-lg xs:text-xl">Designation: {employee.designation || "N/A"}</p>
       </div>
 
-      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xs:grid-cols-1 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-2 xs:grid-cols-1 md:grid-cols-2 mb-10">
         <Link to={`/employees/${employee.employeeId || inputEmployeeId}/call-logs`}>
-          <div className="bg-gray-300 shadow-md rounded-lg p-4 xs:p-5 sm:p-6 flex items-center justify-between hover:shadow-xl transition-shadow shadow-blue-600">
+          <div className="bg-gray-300 shadow-xl rounded-lg p-4 xs:p-5 sm:p-6 flex items-center justify-between hover:shadow-xl transition-shadow shadow-blue-700">
             <div>
               <h2 className="text-xl xs:text-2xl sm:text-2xl font-bold">Total Calls</h2>
               <p className="text-gray-800 mt-1 text-lg">{totalCalls} calls</p>
@@ -132,7 +126,7 @@ const Dashboard = () => {
         </Link>
 
         <Link to={`/employees/${employee.employeeId || inputEmployeeId}/messages`}>
-          <div className="bg-gray-300 shadow-lg rounded-lg p-4 xs:p-5 sm:p-6 flex items-center justify-between hover:shadow-xl shadow-green-500 transition-shadow">
+          <div className="bg-gray-300 shadow-xl rounded-lg p-4 xs:p-5 sm:p-6 flex items-center justify-between hover:shadow-xl shadow-green-600 transition-shadow">
             <div>
               <h2 className="text-xl xs:text-2xl sm:text-2xl font-bold">Messages</h2>
               <p className="text-gray-800 mt-1 text-lg">{totalMessages} messages</p>
@@ -141,21 +135,20 @@ const Dashboard = () => {
           </div>
         </Link>
 
-        <div className="bg-gray-300 shadow-lg rounded-lg p-4 xs:p-5 sm:p-6 flex items-center justify-between shadow-yellow-300 hover:shadow-xl transition-shadow">
+        <div className="bg-gray-300 shadow-xl rounded-lg p-4 xs:p-5 sm:p-6 flex items-center justify-between shadow-yellow-500 hover:shadow-xl transition-shadow">
           <div>
             <h2 className="text-xl xs:text-2xl sm:text-2xl font-bold">Salary Details</h2>
-            <p className="text-gray-800 mt-1 text-lg">Basic Salary: {basicSalary}</p>
-            <p className="text-gray-800 mt-1 text-lg">Number of Leaves: {numberOfLeaves}</p>
-            <p className="text-gray-800 mt-1 text-lg">Actual Salary: {actualSalary}</p>
-            <p className="text-gray-800 mt-1 text-lg">Advance Salary: {advanceSalary}</p>
+            <p className="text-gray-700 text-lg xs:text-xl">Basic Salary: {basicSalary}</p>
+            <p className="text-gray-700 text-lg xs:text-xl">Number of Leaves: {numberOfLeaves}</p>
+            <p className="text-gray-700 text-lg xs:text-xl">Actual Salary: {actualSalary}</p>
+            <p className="text-gray-700 text-lg xs:text-xl">Advance Salary: {advanceSalary}</p>
           </div>
           <FaCheckCircle className="text-green-500 text-2xl sm:text-3xl" />
         </div>
 
-        <div className="bg-gray-300 shadow-lg rounded-lg p-4 xs:p-5 sm:p-6 flex items-center justify-between shadow-red-500 hover:shadow-xl transition-shadow">
+        <div className="bg-gray-300 shadow-xl rounded-lg p-4 xs:p-5 sm:p-6 flex items-center justify-between shadow-red-600 hover:shadow-xl transition-shadow">
           <div>
             <h2 className="text-xl xs:text-2xl sm:text-2xl font-bold">Location Updates</h2>
-            {/* Displaying the location updates from attendance data */}
             {locations.length > 0 ? (
               locations.map((location, index) => (
                 <p key={index} className="text-gray-800 mt-1 text-lg">

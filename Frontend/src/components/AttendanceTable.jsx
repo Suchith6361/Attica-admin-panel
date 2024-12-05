@@ -57,7 +57,7 @@ const AttendanceTable = () => {
       <h2 className="text-4xl font-bold mb-6 text-center text-blue-600">Employee Attendance</h2>
 
       {employee && (
-        <div className="bg-blue-500 text-white p-4 rounded-lg mb-6">
+        <div className="bg-red-600 text-white p-4 rounded-lg mb-6">
           <h3 className="text-2xl font-semibold">Employee Details</h3>
           <p><strong>ID:</strong> {employee.employeeId}</p>
           <p><strong>Name:</strong> {employee.name}</p>
@@ -71,12 +71,12 @@ const AttendanceTable = () => {
 
       <div className="flex flex-col md:flex-row justify-center space-x-0 md:space-x-4 mb-6">
         <Link to={`/employees/${employeeId}/attendance-list/leaves`}>
-          <button className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600 transition duration-300 mb-2 md:mb-0">
+          <button className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-red-600 transition duration-300 mb-2 md:mb-0">
             View Leave Requests
           </button>
         </Link>
         <Link to={`/employees/${employeeId}/attendance-list/complaints`}>
-          <button className="px-6 py-2 bg-red-500 text-white rounded-lg shadow hover:bg-red-600 transition duration-300">
+          <button className="px-6 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-red-600 transition duration-300">
             View Complaints
           </button>
         </Link>
